@@ -82,12 +82,6 @@ supported.
 
 ## To-Do
 
-### Add a guide for macOS Safari interaction
-
-It doesn't work completely as I'd like, but it is still usable.
-
-### Add a mobile breakpoint for the guides (display them in a column)
-
 ### Add crop rectangle values as options to the `selfie` call and open in a tab
 
 When `selfie(x, y, w, h)` is called, capture the screenshot and then use the
