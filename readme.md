@@ -104,3 +104,7 @@ defining the crop region. Maybe the color won't even have to be supplied, maybe
 it will be feasible to implement an algorithm which looks for a rectangle like
 that of any color in the image. The lack of this pattern could also be used as
 an indicator for the user that they selected the incorrect tab.
+
+### Add favicon as an icon to the main title
+
+### Add a link to the GitHub repository to the page
