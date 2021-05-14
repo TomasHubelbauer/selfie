@@ -73,11 +73,20 @@ want to use it. Use `await new Promise(resolve => setTimeout(resolve, 100))` to
 give the web cam time to adjust the picture and then proceed. Without this, the
 first frame usually comes out dark, almost completely black.
 
+## Support
+
+I've tested the library works in Mozilla Firefox and Google Chrome. I've also
+tested Safari. In macOS Safari, the user is not asked for a window to select,
+the entire screen is shared immediately. In iOS Safari, `getDisplayMedia` is not
+supported.
+
 ## To-Do
 
-### Test this out on iOS Safari and add a mobile breakpoint for the guides
+### Add a guide for macOS Safari interaction
 
-Maybe the breakpoint will not be needed depending on readability.
+It doesn't work completely as I'd like, but it is still usable.
+
+### Add a mobile breakpoint for the guides (display them in a column)
 
 ### Add crop rectangle values as options to the `selfie` call and open in a tab
 
