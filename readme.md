@@ -78,3 +78,11 @@ first frame usually comes out dark, almost completely black.
 ### Test this out on iOS Safari and add a mobile breakpoint for the guides
 
 Maybe the breakpoint will not be needed depending on readability.
+
+### Add crop rectangle values as options to the `selfie` call and open in a tab
+
+When `selfie(x, y, w, h)` is called, capture the screenshot and then use the
+`canvas` drawing context to crop it to the provided area. `selfie(x, y)` can
+also be called, implying `w` of width minus `x` and `h` of height - `y`. The
+screenshot should also open in a new tab so that the page doesn't have to be
+refreshed in between adjustments of the coordinates (losing state).
