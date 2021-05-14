@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Selfie</title>
+    <script src="index.js"></script>
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1>Selfie</h1>
+    <p>
+      This page uses the
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia">
+        <code>getDisplayMedia</code> API
+      </a>
+      to allow the user to obtain a screenshot of the page itself.
+    </p>
+    <button class="snapButton">Take Screenshot</button>
+    <h2 id="guides">Guides</h2>
+    <p>
+      To learn how to use this to take screenshots of other pages, see
+      <a href="#usage">Usage</a>.
+    </p>
+    <div id="guidesDiv">
+      <div class="guideDiv">
+        <h2>
+          <img src="firefox.png" class="icon" />
+          Mozilla Firefox
+        </h2>
+        <h3>1. Initiate the screen capture</h3>
+        <p>
+          Click the
+          <button class="snapButton">Take Screenshot</button>
+          button.
+        </p>
+        <img src="firefox-0.png" />
+        <h3>2. Expand the Window Or Screen selector</h3>
+        <img src="firefox-1.png" />
+        <h3>3. Select the Selfie tab</h3>
+        <img src="firefox-2.png" />
+        <h3>4. Confirm the tab choice</h3>
+        <img src="firefox-3.png" />
+        <p>Press the Allow button</p>
+        <h3>5. Download the screenshot</h3>
+        <p>The screenshot will replace the page's content.</p>
+        <p>Right-click on it and select Save Image As… to download it.</p>
+        <img src="firefox-4.png" />
+      </div>
+      <div class="guideDiv">
+        <h2>
+          <img src="chrome.png" class="icon" />
+          Google Chrome
+        </h2>
+        <h3>1. Initiate the screen capture</h3>
+        <p>
+          Click the
+          <button class="snapButton">Take Screenshot</button>
+          button.
+        </p>
+        <img src="chrome-0.png" />
+        <h3>2. Use the Choose What To Share selector</h3>
+        <img src="chrome-1.png" />
+        <h3>3. Select the Chrome Tabs tab</h3>
+        <img src="chrome-2.png" />
+        <h3>4. Confirm the tab choice</h3>
+        <img src="chrome-3.png" />
+        <p>Press the Share button</p>
+        <h3>5. Download the screenshot</h3>
+        <p>The screenshot will replace the page's content.</p>
+        <p>Right-click on it and select Save Image As… to download it.</p>
+        <img src="chrome-4.png" />
+      </div>
+    </div>
+    <h2 id="usage">Usage</h2>
+    <p>To use Selfie to take a screenshot of another page:</p>
+    <h3>1. Reference the Selfie library from the document / DevTools</h3>
+    <pre>
+      &lt;script src="https://tomashubelbauer.github.io/selfie/index.js"&gt;&lt;/script&gt;
+    </pre>
+    <pre>
+      const script = document.createElement('script');
+      script.src = 'https://tomashubelbauer.github.io/selfie/index.js';
+      document.head.append(script);
+    </pre>
+    <h3>2. Call the <code>selfie()</code> method to show the button</h3>
+    <p>
+      The <code>getDisplayMedia</code> API must be called from a user gesture.
+      Showing a button and binding the screenshotting to its <code>click</code>
+      event is an easy way to satisfy this constraint.
+    </p>
+    <p>
+      The button will appear in the top left corner and will hide after click.
+    </p>
+    <button class="snapButton">Selfie</button>
+    <h3>3. Click the button and save the image!</h3>
+    <p>
+      After clicking the button, the page will be replaced with the screenshot
+      image which you can right-click to save. See <a href="#guides">Guides</a>.
+    </p>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+body {
+  font: normal 10pt sans-serif;
+  margin: 1em 1em 50vh;
+  text-align: center;
+}
+
+#guidesDiv {
+  display: flex;
+  gap: 1em;
+}
+
+.guideDiv {
+  flex: 1;
+}
+
+.guideDiv h2 {
+  align-items: center;
+  display: inline-flex;
+}
+
+.guideDiv img.icon {
+  margin: 0 1em 0 0;
+  width: 3em;
+}
+
+.guideDiv img {
+  max-width: 300px;
+}
