@@ -86,3 +86,12 @@ When `selfie(x, y, w, h)` is called, capture the screenshot and then use the
 also be called, implying `w` of width minus `x` and `h` of height - `y`. The
 screenshot should also open in a new tab so that the page doesn't have to be
 refreshed in between adjustments of the coordinates (losing state).
+
+### Consider implementing automatic crop by accepting a color of crop outline
+
+This feature would work by letting the user capture the tab (or the whole screen
+showing the tab) and then using the image to find a 1px-stroke-thick rectangle
+defining the crop region. Maybe the color won't even have to be supplied, maybe
+it will be feasible to implement an algorithm which looks for a rectangle like
+that of any color in the image. The lack of this pattern could also be used as
+an indicator for the user that they selected the incorrect tab.
