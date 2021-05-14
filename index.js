@@ -6,28 +6,34 @@ window.addEventListener('load', async () => {
 });
 
 async function snap() {
-  const mediaStream = await navigator.mediaDevices.getDisplayMedia();
+  try {
+    const mediaStream = await navigator.mediaDevices.getDisplayMedia();
 
-  const video = document.createElement('video');
-  video.srcObject = mediaStream;
-  await video.play();
+    const video = document.createElement('video');
+    video.srcObject = mediaStream;
+    await video.play();
 
-  // Give the video time to figure out white balance and stuff (to not be blank)
-  await new Promise(resolve => setTimeout(resolve, 1000));
+    // Give the video time to figure out white balance and stuff (to not be blank)
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-  const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-  const context = canvas.getContext('2d');
-  context.drawImage(video, 0, 0);
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
 
-  mediaStream.getTracks().forEach(mediaStreamTrack => mediaStreamTrack.stop());
+    mediaStream.getTracks().forEach(mediaStreamTrack => mediaStreamTrack.stop());
 
-  const img = document.createElement('img');
-  img.src = canvas.toDataURL();
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL();
 
-  document.body.replaceWith(img);
+    document.body.replaceWith(img);
+  }
+  catch (error) {
+    alert('Screen capture failed:' + error.toString());
+    throw error;
+  }
 }
 
 window.selfie = function () {
