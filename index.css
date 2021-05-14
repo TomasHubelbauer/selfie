@@ -26,3 +26,9 @@ body {
 .guideDiv img {
   max-width: 300px;
 }
+
+@media (orientation: portrait) {
+  #guidesDiv {
+    flex-direction: column;
+  }
+}
