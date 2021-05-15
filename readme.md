@@ -39,6 +39,23 @@ window.selfie();
 The extra step of clicking the button is required as the `getDisplayMedia` API
 needs to be called from a user gesture.
 
+## Roadmap
+
+I have a feature in the works which is capable of automatically cropping out a
+region of the image which is outlined by a solid color (not shade) border. It
+works decently, but slowly. It is the `detect` method in `index.js`. Once this
+is implemented, this library will be more usable by allowing the user to mark
+the area of their interest or the whole tab and the automatic crop would remove
+the browser chrome Firefox keeps (but Chrome does not) when capturing a specific
+tab.
+
+## Support
+
+I've tested the library works in Mozilla Firefox and Google Chrome. I've also
+tested Safari. In macOS Safari, the user is not asked for a window to select,
+the entire screen is shared immediately. In iOS Safari, `getDisplayMedia` is not
+supported.
+
 ## Notes
 
 ### Multiple rendering implementations
@@ -73,28 +90,15 @@ want to use it. Use `await new Promise(resolve => setTimeout(resolve, 100))` to
 give the web cam time to adjust the picture and then proceed. Without this, the
 first frame usually comes out dark, almost completely black.
 
-## Support
-
-I've tested the library works in Mozilla Firefox and Google Chrome. I've also
-tested Safari. In macOS Safari, the user is not asked for a window to select,
-the entire screen is shared immediately. In iOS Safari, `getDisplayMedia` is not
-supported.
-
 ## To-Do
 
-### Add crop rectangle values as options to the `selfie` call and open in a tab
+### Extend the API to accept either a crop region or enable region detection
 
-When `selfie(x, y, w, h)` is called, capture the screenshot and then use the
-`canvas` drawing context to crop it to the provided area. `selfie(x, y)` can
-also be called, implying `w` of width minus `x` and `h` of height - `y`. The
-screenshot should also open in a new tab so that the page doesn't have to be
-refreshed in between adjustments of the coordinates (losing state).
+Either pass in 2 numbers (X & Y), 4 numbers (X, Y, width and height of the crop)
+or a boolean / flag allowing the `detect` function to find the biggest outlined
+region (using a color, not a shade) and crop it out automatically. If this flag
+is enabled, but no region is found, treat that as an error which might indicate
+the user selected an incorrect tab.
 
-### Consider implementing automatic crop by accepting a color of crop outline
-
-This feature would work by letting the user capture the tab (or the whole screen
-showing the tab) and then using the image to find a 1px-stroke-thick rectangle
-defining the crop region. Maybe the color won't even have to be supplied, maybe
-it will be feasible to implement an algorithm which looks for a rectangle like
-that of any color in the image. The lack of this pattern could also be used as
-an indicator for the user that they selected the incorrect tab.
+Also, open the screenshot in a new tab, so tweaking the region numbers or the
+outline placement can be done on the page without losing its state.
