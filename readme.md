@@ -43,7 +43,7 @@ needs to be called from a user gesture.
 
 I have a feature in the works which is capable of automatically cropping out a
 region of the image which is outlined by a solid color (not shade) border. It
-works decently, but slowly. It is the `detect` method in `index.js`. Once this
+works decently, but slowly. It is the `detect.js` method in `detect`. Once this
 is implemented, this library will be more usable by allowing the user to mark
 the area of their interest or the whole tab and the automatic crop would remove
 the browser chrome Firefox keeps (but Chrome does not) when capturing a specific

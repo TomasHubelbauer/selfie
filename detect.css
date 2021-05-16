@@ -1,0 +1,14 @@
+img#input {
+  box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
+  cursor: crosshair;
+  display: block;
+  image-rendering: pixelated;
+  max-height: 90vh;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+canvas {
+  box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
+  margin: 1ex;
+}
