@@ -44,7 +44,36 @@ window.addEventListener('load', async () => {
     canvas.addEventListener('mouseout', handleMouseOut);
     const context = canvas.getContext('2d');
     context.drawImage(img, -region.x, -region.y);
-    document.body.append(canvas);
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const color = pixel(imageData, 0, 0);
+
+    let top = 0;
+    while ([...Array(canvas.width).keys()].every(x => pixel(imageData, x, top) === color)) {
+      top++;
+    }
+
+    let bottom = 0;
+    while ([...Array(canvas.width).keys()].every(x => pixel(imageData, x, canvas.height - bottom - 1) === color)) {
+      bottom++;
+    }
+
+    let left = 0;
+    while ([...Array(canvas.height).keys()].every(y => pixel(imageData, left, y) === color)) {
+      left++;
+    }
+
+    let right = 0;
+    while ([...Array(canvas.height).keys()].every(y => pixel(imageData, left, canvas.width - right - 1) === color)) {
+      right++;
+    }
+
+    const cropCanvas = document.createElement('canvas');
+    cropCanvas.width = canvas.width - left - right - 4;
+    cropCanvas.height = canvas.width - top - bottom - 4;
+    const cropContext = cropCanvas.getContext('2d');
+    cropContext.drawImage(canvas, -left - 2, -top - 2);
+
+    document.body.append(cropCanvas);
     document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
 
