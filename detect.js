@@ -36,6 +36,8 @@ window.addEventListener('load', async () => {
   // TODO: Detect and remove the first and last rows and columns of the same color
   const progress = document.getElementsByTagName('progress')[0];
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+  console.time('detect');
   for await (const region of detect(imageData, percentage => { progress.value = percentage; p.textContent = percentage + ' %'; })) {
     const canvas = document.createElement('canvas');
     canvas.width = region.width;
@@ -47,6 +49,8 @@ window.addEventListener('load', async () => {
     document.body.append(canvas);
     document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
+
+  console.timeEnd('detect');
 
   context.putImageData(imageData, 0, 0);
   progress.remove();
@@ -60,13 +64,15 @@ function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** 
     throw new Error(`Transparent pixels are not supported: ${x}x${y}: ${imageData.data.slice(index, index + 4)}`);
   }
 
-  // Convert the slice to an array of numbers to get plain array `map`
-  const channels = [...imageData.data.slice(index, index + 3).values()];
+  const r = imageData.data[index];
+  const g = imageData.data[index + 1];
+  const b = imageData.data[index + 2];
 
   // Posterize by reducing its color pallete making more colors match
   // Note that if we don't, image compression color artifacts will make same colors mismatch
   const poster = 4;
-  return channels.map(channel => (~~(channel / (poster * 16)) * poster).toString(16)).join('');
+  const factor = poster * 16;
+  return (~~(r / factor) * poster).toString(16) + (~~(g / factor) * poster).toString(16) + (~~(b / factor) * poster).toString(16);
 }
 
 async function* detect(/** @type {ImageData} */ imageData, progress) {
