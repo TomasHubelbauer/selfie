@@ -3,13 +3,18 @@ body {
   text-align: center;
 }
 
-img#input {
+img {
   box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
   cursor: crosshair;
   image-rendering: pixelated;
   max-height: 50vh;
   max-width: 50vw;
   margin: 0 auto;
+}
+
+progress {
+  display: block;
+  margin: 1ex auto;
 }
 
 canvas {

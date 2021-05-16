@@ -1,6 +1,6 @@
 window.addEventListener('load', async () => {
   const title = document.title;
-  const img = document.getElementById('input');
+  const img = document.getElementsByTagName('img')[0];
 
   const canvas = document.createElement('canvas');
   canvas.width = img.naturalWidth;
@@ -26,7 +26,8 @@ window.addEventListener('load', async () => {
   img.addEventListener('mouseout', () => document.title = title);
 
   // TODO: Detect and remove the first and last rows and columns of the same color
-  for await (const region of detect(imageData)) {
+  const progress = document.getElementsByTagName('progress')[0];
+  for await (const region of detect(imageData, percentage => progress.value = percentage)) {
     const canvas = document.createElement('canvas');
     canvas.width = region.width;
     canvas.height = region.height;
@@ -56,7 +57,7 @@ function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** 
   return channels.map(channel => (~~(channel / (poster * 16)) * poster).toString(16)).join('');
 }
 
-async function* detect(/** @type {ImageData} */ imageData) {
+async function* detect(/** @type {ImageData} */ imageData, progress) {
   const title = document.title;
 
   // Do not look past these limits because no contentful rectangle would fit
@@ -68,7 +69,7 @@ async function* detect(/** @type {ImageData} */ imageData) {
 
   // Find candidate outline rectangle top-left corner pixels
   for (let y = 0; y < maxHeight; y++) {
-    document.title = `${(y / maxHeight * 100).toFixed(2)} %`;
+    progress((y / maxHeight * 100).toFixed(2));
     await new Promise(resolve => setTimeout(resolve, 0));
     point: for (let x = 0; x < maxWidth; x++) {
       const color = pixel(imageData, x, y);
