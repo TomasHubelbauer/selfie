@@ -1,3 +1,5 @@
+import detect from './detect.js';
+
 window.addEventListener('load', async () => {
   const buttons = document.getElementsByClassName('snapButton');
   for (const button of buttons) {

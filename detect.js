@@ -1,54 +1,4 @@
-window.addEventListener('load', async () => {
-  const img = document.getElementsByTagName('img')[0];
-
-  const canvas = document.createElement('canvas');
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-
-  const p = document.getElementsByTagName('p')[0];
-
-  function handleMouseMove(event) {
-    const canvas = event.currentTarget;
-    const context = canvas.getContext('2d');
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const { width, height } = canvas.getBoundingClientRect();
-    const ratioX = event.offsetX / width;
-    const ratioY = event.offsetY / height;
-    const x = ~~(ratioX * canvas.width);
-    const y = ~~(ratioY * canvas.height);
-    const index = y * imageData.width * 4 + x * 4;;
-    const color256 = imageData.data.slice(index, index + 3).join();
-    const color8 = pixel(imageData, x, y);
-    p.textContent = `${x}×${y}, rgb(${color256}), #${color8}`;
-  }
-
-  function handleMouseOut() {
-    p.textContent = '';
-  }
-
-  canvas.addEventListener('mousemove', handleMouseMove);
-  canvas.addEventListener('mouseout', handleMouseOut);
-
-  const context = canvas.getContext('2d');
-  context.drawImage(img, 0, 0, canvas.width, canvas.height);
-  img.replaceWith(canvas);
-
-  // TODO: Detect and remove the first and last rows and columns of the same color
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  for await (const region of detect(imageData)) {
-    const canvas = document.createElement('canvas');
-    canvas.width = region.width;
-    canvas.height = region.height;
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseout', handleMouseOut);
-    const context = canvas.getContext('2d');
-    context.drawImage(img, -region.x, -region.y);
-    document.body.append(canvas);
-    document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
-  }
-});
-
-function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** @type {number} */ y) {
+export function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** @type {number} */ y) {
   // Note that `ImageData` are always RGBA (4 channels)
   const index = y * imageData.width * 4 + x * 4;
   if (imageData.data[index + 3] !== 255) {
@@ -66,7 +16,7 @@ function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** 
   return (~~(r / factor) * poster).toString(16) + (~~(g / factor) * poster).toString(16) + (~~(b / factor) * poster).toString(16);
 }
 
-async function* detect(/** @type {ImageData} */ imageData) {
+export default async function* detect(/** @type {ImageData} */ imageData) {
   // Do not look past these limits because no contentful rectangle would fit
   const maxWidth = imageData.width - 3;
   const maxHeight = imageData.height - 3;

@@ -39,6 +39,11 @@ window.selfie();
 The extra step of clicking the button is required as the `getDisplayMedia` API
 needs to be called from a user gesture.
 
+## Development
+
+Run using `npx serve .` (http://localhost:5000) instead of off `file` protocol.
+This is needed for ESM and canvas CORS to run correctly.
+
 ## Roadmap
 
 I have a feature in the works which is capable of automatically cropping out a
