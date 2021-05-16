@@ -107,3 +107,11 @@ the user selected an incorrect tab.
 
 Also, open the screenshot in a new tab, so tweaking the region numbers or the
 outline placement can be done on the page without losing its state.
+
+### Fix `detect.js` to work with `detect2.png` and `detect3.png`
+
+For some reason it doesn't like these files even though the rectangle there is
+pretty pronounced. The test is in `test/detect.html`. This should also fix the
+problem in `worker.js` which is not working due to this right now. It seems the
+problem is only with files created in Chrome, in Firefox, this feature works.
+In Safari, the whole thing collapses due to ESM in Web Workers support missing.

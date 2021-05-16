@@ -1,4 +1,5 @@
 import detect, { pixel } from '../detect.js';
+import crop from '../crop.js';
 
 window.addEventListener('load', async () => {
   const img = document.getElementsByTagName('img')[0];
@@ -38,14 +39,12 @@ window.addEventListener('load', async () => {
   // TODO: Detect and remove the first and last rows and columns of the same color
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   for await (const region of detect(imageData)) {
-    const canvas = document.createElement('canvas');
-    canvas.width = region.width;
-    canvas.height = region.height;
+    const canvas = crop(img, region);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseout', handleMouseOut);
-    const context = canvas.getContext('2d');
-    context.drawImage(img, -region.x, -region.y);
     document.body.append(canvas);
     document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
+
+  p.textContent = 'Done';
 });

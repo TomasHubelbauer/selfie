@@ -1,10 +1,65 @@
 import detect from './detect.js';
+import crop from './crop.js';
 
 window.addEventListener('load', async () => {
   const buttons = document.getElementsByClassName('snapButton');
   for (const button of buttons) {
-    button.addEventListener('click', snap);
+    button.addEventListener('click', async () => document.body.replaceWith(await snap()));
   }
+
+  const detectButton = document.getElementById('detectButton');
+  const progress = document.createElement('progress');
+  detectButton.addEventListener('click', async () => {
+    detectButton.classList.toggle('clicked', true);
+
+    const canvas = await snap();
+    progress.append(canvas);
+    detectButton.classList.toggle('clicked', false);
+
+    detectButton.replaceWith(progress);
+
+    const context = canvas.getContext('2d');
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    const worker = new Worker('worker.js', { type: 'module' });
+    worker.addEventListener('error', async error => {
+      worker.terminate();
+
+      // Throw error unless it is no-ESM-in-worker Firefox error in which case fallback to main thread
+      if (error.message !== 'SyntaxError: import declarations may only appear at top level of a module') {
+        alert(error.message);
+        return;
+      }
+
+      alert('This browser does not support web workers, region detection will run on the main thread.');
+      const regions = [];
+      for await (const region of detect(imageData)) {
+        regions.push(region);
+      }
+
+      const region = regions.sort((a, b) => a.width * b.width()).reverse()[0];
+      if (!region) {
+        alert('No highlighted region found in the image. :-(');
+        progress.replaceWith(canvas);
+        return;
+      }
+
+      document.body.replaceWith(crop(canvas, region));
+    });
+
+    worker.postMessage(imageData);
+    worker.addEventListener('message', event => {
+      worker.terminate();
+
+      if (!event.data) {
+        alert('No highlighted region found in the image. :-(');
+        progress.replaceWith(canvas);
+        return;
+      }
+
+      document.body.replaceWith(crop(canvas, event.data));
+    });
+  });
 });
 
 async function snap() {
@@ -27,10 +82,7 @@ async function snap() {
 
     mediaStream.getTracks().forEach(mediaStreamTrack => mediaStreamTrack.stop());
 
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL();
-
-    document.body.replaceWith(img);
+    return canvas;
   }
   catch (error) {
     alert('Screen capture failed:' + error.toString());
@@ -44,7 +96,8 @@ window.selfie = function () {
   button.textContent = 'Selfie';
   button.addEventListener('click', async () => {
     button.remove();
-    await snap();
+    const canvas = await snap();
+    document.body.replaceWith(canvas);
   });
 
   document.body.append(button);
