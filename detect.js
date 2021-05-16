@@ -34,11 +34,8 @@ window.addEventListener('load', async () => {
   img.replaceWith(canvas);
 
   // TODO: Detect and remove the first and last rows and columns of the same color
-  const progress = document.getElementsByTagName('progress')[0];
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-
-  console.time('detect');
-  for await (const region of detect(imageData, percentage => { progress.value = percentage; p.textContent = percentage + ' %'; })) {
+  for await (const region of detect(imageData)) {
     const canvas = document.createElement('canvas');
     canvas.width = region.width;
     canvas.height = region.height;
@@ -49,12 +46,6 @@ window.addEventListener('load', async () => {
     document.body.append(canvas);
     document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
-
-  console.timeEnd('detect');
-
-  context.putImageData(imageData, 0, 0);
-  progress.remove();
-  p.textContent = '';
 });
 
 function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** @type {number} */ y) {
@@ -75,7 +66,7 @@ function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** 
   return (~~(r / factor) * poster).toString(16) + (~~(g / factor) * poster).toString(16) + (~~(b / factor) * poster).toString(16);
 }
 
-async function* detect(/** @type {ImageData} */ imageData, progress) {
+async function* detect(/** @type {ImageData} */ imageData) {
   // Do not look past these limits because no contentful rectangle would fit
   const maxWidth = imageData.width - 3;
   const maxHeight = imageData.height - 3;
@@ -85,8 +76,6 @@ async function* detect(/** @type {ImageData} */ imageData, progress) {
 
   // Find candidate outline rectangle top-left corner pixels
   for (let y = 0; y < maxHeight; y++) {
-    progress((y / maxHeight * 100).toFixed(2));
-    await new Promise(resolve => setTimeout(resolve, 0));
     point: for (let x = 0; x < maxWidth; x++) {
       const color = pixel(imageData, x, y);
 
