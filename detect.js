@@ -141,7 +141,8 @@ async function* detect(/** @type {ImageData} */ imageData) {
       }
 
       // Reject origin points which originated in an area of an existing region
-      if (regions.find(region => x >= region.x && x <= region.x + region.width && y >= region.y && y <= region.y + region.height)) {
+      // Shift by 1 top-left to merge with regions which would overlap anyway
+      if (regions.find(region => x >= region.x - 1 && x <= region.x + region.width && y >= region.y - 1 && y <= region.y + region.height)) {
         continue point;
       }
 
