@@ -33,6 +33,7 @@ window.addEventListener('load', async () => {
     const context = canvas.getContext('2d');
     context.drawImage(img, -region.x, -region.y);
     document.body.append(canvas);
+    document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
 
   context.putImageData(imageData, 0, 0);
