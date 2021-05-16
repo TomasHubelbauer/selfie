@@ -44,36 +44,7 @@ window.addEventListener('load', async () => {
     canvas.addEventListener('mouseout', handleMouseOut);
     const context = canvas.getContext('2d');
     context.drawImage(img, -region.x, -region.y);
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const color = pixel(imageData, 0, 0);
-
-    let top = 0;
-    while ([...Array(canvas.width).keys()].every(x => pixel(imageData, x, top) === color)) {
-      top++;
-    }
-
-    let bottom = 0;
-    while ([...Array(canvas.width).keys()].every(x => pixel(imageData, x, canvas.height - bottom - 1) === color)) {
-      bottom++;
-    }
-
-    let left = 0;
-    while ([...Array(canvas.height).keys()].every(y => pixel(imageData, left, y) === color)) {
-      left++;
-    }
-
-    let right = 0;
-    while ([...Array(canvas.height).keys()].every(y => pixel(imageData, left, canvas.width - right - 1) === color)) {
-      right++;
-    }
-
-    const cropCanvas = document.createElement('canvas');
-    cropCanvas.width = canvas.width - left - right - 4;
-    cropCanvas.height = canvas.width - top - bottom - 4;
-    const cropContext = cropCanvas.getContext('2d');
-    cropContext.drawImage(canvas, -left - 2, -top - 2);
-
-    document.body.append(cropCanvas);
+    document.body.append(canvas);
     document.body.append(`${region.x}×${region.y} (${region.width}×${region.height}, ${region.x + region.width}×${region.y + region.height})`);
   }
 
@@ -187,9 +158,31 @@ async function* detect(/** @type {ImageData} */ imageData, progress) {
         continue point;
       }
 
-      const region = { x, y, width, height };
-      regions.push(region);
-      yield region;
+      let top = 0;
+      while ([...Array(width).keys()].every(_x => pixel(imageData, x + _x, y + top) === color)) {
+        top++;
+      }
+
+      let bottom = 0;
+      while ([...Array(width).keys()].every(_x => pixel(imageData, x + _x, y + height - bottom - 1) === color)) {
+        bottom++;
+      }
+
+      let left = 0;
+      while ([...Array(height).keys()].every(_y => pixel(imageData, x + left, y + _y) === color)) {
+        left++;
+      }
+
+      let right = 0;
+      while ([...Array(height).keys()].every(_y => pixel(imageData, x + width - right - 1, y + _y) === color)) {
+        right++;
+      }
+
+      // Calculate crop off amounts to get rid of the marker outline remains
+      yield { x: x + left + 2, y: y + top + 2, width: width - left - right - 4, height: height - top - bottom - 4 };
+
+      // Keep track of the region to detect overlapping region matches
+      regions.push({ x, y, width, height });
     }
   }
 }
