@@ -1,14 +1,19 @@
+body {
+  margin: 1em 1em 50vh;
+}
+
 img#input {
   box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
   cursor: crosshair;
   display: block;
   image-rendering: pixelated;
-  max-height: 90vh;
-  max-width: 90vw;
+  max-height: 50vh;
+  max-width: 50vw;
   margin: 0 auto;
 }
 
 canvas {
   box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
-  margin: 1ex;
+  display: block;
+  margin: 1ex auto;
 }
