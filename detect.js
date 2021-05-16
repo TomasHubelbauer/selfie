@@ -48,7 +48,11 @@ function pixel(/** @type {ImageData} */ imageData, /** @type {number} */ x, /** 
 
   // Convert the slice to an array of numbers to get plain array `map`
   const channels = [...imageData.data.slice(index, index + 3).values()];
-  return channels.map(channel => (~~(channel / 128) * 8).toString(16)).join('');
+
+  // Posterize by reducing its color pallete making more colors match
+  // Note that if we don't, image compression color artifacts will make same colors mismatch
+  const poster = 4;
+  return channels.map(channel => (~~(channel / (poster * 16)) * poster).toString(16)).join('');
 }
 
 async function* detect(/** @type {ImageData} */ imageData) {
