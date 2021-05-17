@@ -3,6 +3,12 @@ import scan from './scan.js';
 import crop from './crop.js';
 
 window.addEventListener('load', async () => {
+  if (!navigator.mediaDevices.getDisplayMedia) {
+    document
+      .getElementById('buttonsDiv')
+      .replaceWith('getDisplayMedia API is not supported in this browser.');
+  }
+
   const buttons = document.getElementsByClassName('snapButton');
   for (const button of buttons) {
     button.addEventListener('click', async () => {
