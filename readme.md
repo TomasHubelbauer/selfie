@@ -312,3 +312,5 @@ shown in the address bar. In Firefox, an indicator is shown later and the delay
 actually includes it instead of getting to the capture before it appears. In
 Chrome, the UI takes a while to go away, so the whole second should be reserved
 only for it and not hurt the other browsers.
+
+### Fix mobile Safari showing the guide despite no support
