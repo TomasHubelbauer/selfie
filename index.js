@@ -10,10 +10,10 @@ window.addEventListener('load', async () => {
     const introP = document.getElementById('introP');
     const code = document.createElement('code');
     code.textContent = 'getDisplayMedia';
-    const fragment = document.createDocumentFragment();
-    fragment.append(code);
-    fragment.append(' API is not supported in this browser.');
-    introP.replaceWith(fragment);
+    const div = document.createElement('div');
+    div.append(code);
+    div.append(' API is not supported in this browser.');
+    introP.replaceWith(div);
   }
 
   const buttons = document.getElementsByClassName('snapButton');
