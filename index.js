@@ -45,8 +45,8 @@ window.addEventListener('load', async () => {
             fragment.append(center);
           }
 
+          // TODO: Replace with a mousemove handler which shows the canvas zoomed in x10 without antialiasing
           if (!autoCrop) {
-            canvas.className = 'debug';
             let x;
             let y;
             canvas.addEventListener('mousedown', event => {
@@ -57,8 +57,8 @@ window.addEventListener('load', async () => {
                 return;
               }
 
-              const width = event.offsetX - x;
-              const height = event.offsetY - y;
+              const width = event.offsetX - x + 1;
+              const height = event.offsetY - y + 1;
               console.log(event.offsetX, event.offsetY, width, height);
               const img = document.createElement('img');
               img.src = crop(canvas, { x, y, width, height }).toDataURL();

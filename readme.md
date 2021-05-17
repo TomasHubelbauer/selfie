@@ -225,6 +225,9 @@ too high, let's check multiple variations of each color for the tolerance:
 
 How to get these images:
 
+- [ ] Change this away from the Color Meter app as it antialiases - make the
+      canvas zoom 10x and pan on mouse move and commit coords on mouse down & up
+
 1. Set the app to debug mode using `const autoCrop = false;`
 2. Configure the desired marker size using `--marker-size` in CSS
 2. Do a full screen capture and wait for the `canvas` to show up
