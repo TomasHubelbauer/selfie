@@ -2,6 +2,9 @@ body {
   font: normal 10pt sans-serif;
   margin: 1em 1em 50vh;
   text-align: center;
+
+  /* Note that this variable is also referenced in the JavaScript code */
+  --markerSize: 1px;
 }
 
 a {
@@ -17,10 +20,26 @@ h1 img.icon {
   margin: 0 1em 0;
 }
 
-/* Do not use `:visited` because it loses focus due to Chrome share selector UI */
-#detectButton.clicked {
-  outline: 3px solid lime;
-  outline-offset: 10em;
+.marker {
+  border: 1px solid white;
+  display: block;
+  height: var(--markerSize);
+  visibility: hidden;
+  width: var(--markerSize);
+}
+
+.marker.visible {
+  visibility: initial;
+}
+
+#marker1 {
+  background: red;
+  margin: 0 0 0 25vw;
+}
+
+#marker2 {
+  background: lime;
+  margin: 0 0 0 75vw;
 }
 
 #guidesDiv {

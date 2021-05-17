@@ -1,4 +1,4 @@
-export default function crop(source, region) {
+export default function crop(/** @type {CanvasImageSource} */ source, /** @type {{ readonly x: number; readonly y: number; readonly width: number; readonly height: number; }} */ region) {
   const canvas = document.createElement('canvas');
   canvas.width = region.width;
   canvas.height = region.height;

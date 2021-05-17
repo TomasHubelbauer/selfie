@@ -16,43 +16,121 @@ https://tomashubelbauer.github.io/selfie
 
 ## Usage
 
-Install statically using a `script` tag:
-
-```html
-<script src="https://tomashubelbauer.github.io/selfie/index.js"></script>
-```
-
-Install dynamically (useful for DevTools):
+### To capture someone else's page using DevTools
 
 ```js
-const script = document.createElement('script');
-script.src = 'https://tomashubelbauer.github.io/selfie/index.js';
-document.head.append(script);
-```
-
-Call the `selfie()` method to display the button to initiate the capture:
-
-```js
-window.selfie();
+const { default: selfie } = await import('https://tomashubelbauer.github.io/selfie/selfie.js');
+selfie();
 ```
 
 The extra step of clicking the button is required as the `getDisplayMedia` API
 needs to be called from a user gesture.
+
+### To capture your own page
+
+Install statically using a `script` tag:
+
+```html
+<script src="https://tomashubelbauer.github.io/selfie/snap.js"></script>
+```
+
+Install statically using ESM `import`:
+
+```js
+import snap from 'https://tomashubelbauer.github.io/selfie/snap.js';
+```
+
+Install dynamically using ESM `import`:
+
+```js
+const { default: snap } = await import('https://tomashubelbauer.github.io/selfie/snap.js');
+```
+
+Call the `snap` function in a way that includes user interaction (e.g. a button)
+as the user interaction is required for the `getDisplayMedia` API to be used and
+use the resulting `canvas`.
+
+```js
+button.addEventListener('click', async () => document.body.append(await snap()));
+```
+
+### To capture a portion of your own page
+
+Display two markers, a top-left red one and a bottom-right lime one. Calculate
+the dimensions of the rectangle defined by them. Plug the resulting width and
+height into the `scan` function. The markers can be as small as 1x1 px, but in
+practice due to image compression color artifacts the `getDisplayMedia` API
+suffers from, an area of 5x5 px is best for each marker. Surround each marker
+with a white border to help prevent the color artifact from surrounding pixels.
+
+Install statically using a `script` tag:
+
+```html
+<script src="https://tomashubelbauer.github.io/selfie/snap.js"></script>
+<script src="https://tomashubelbauer.github.io/selfie/scan.js"></script>
+```
+
+Install statically using ESM `import`:
+
+```js
+import snap from 'https://tomashubelbauer.github.io/selfie/snap.js';
+import scan from 'https://tomashubelbauer.github.io/selfie/scan.js';
+```
+
+Install dynamically using ESM `import`:
+
+```js
+const { default: snap } = await import('https://tomashubelbauer.github.io/selfie/snap.js');
+const { default: scan } = await import('https://tomashubelbauer.github.io/selfie/scan.js');
+```
+
+Call the `snap` function in a way that includes user interaction (e.g. a button)
+as the user interaction is required for the `getDisplayMedia` API to be used and
+pass the resulting `canvas` as well as the above described dimensions into the
+`scan` function which will return the x and y coordinates of the crop in the
+provided `canvas` (and you already have the dimensions):
+
+```js
+button.addEventListener('click', async () => {
+  document.body.append(scan(await snap(), 5 /* color tolerance */, width, height));
+});
+```
+
+You can use the `crop` function provided by Selfie to crop the canvas to the
+found area, just reference `crop.js` the same way you do the other scripts:
+
+```js
+button.addEventListener('click', async () => {
+  document.body.append(crop(scan(await snap(), 5 /* color tolerance */, width, height)));
+});
+```
 
 ## Development
 
 Run using `npx serve .` (http://localhost:5000) instead of off `file` protocol.
 This is needed for ESM and canvas CORS to run correctly.
 
-## Roadmap
+### How it works
 
-I have a feature in the works which is capable of automatically cropping out a
-region of the image which is outlined by a solid color (not shade) border. It
-works decently, but slowly. It is the `detect.js` method in `detect`. Once this
-is implemented, this library will be more usable by allowing the user to mark
-the area of their interest or the whole tab and the automatic crop would remove
-the browser chrome Firefox keeps (but Chrome does not) when capturing a specific
-tab.
+Capturing a screenshot of whatever the user selects in the browser UI when asked
+is done by using the `getDisplayMedia` API which returns a stream which we stop
+right after we capture its first frame.
+
+Capturing a particular area is done by toggling two markers described in the
+Usage section above while taking the screenshot. Afterwards, an algorithm is
+used to find the location of the main marker in the screenshot and the knowledge
+of the offset between the two markers provides us with all the information we
+need to crop the original screenshot down to just the desired area.
+
+The algorithm works by assuming:
+
+- The marked area will be rectangular
+- The marked area will not be rotated or scaled, only translated
+- The marked area will be there and if it can't find it, that's an error
+- The marked area will have a known, correct size (provided by the caller)
+- Both the lime top-left marker and the red bottom-right marked will be visible
+- The markers will be apart the correct distance horizontally and vertically
+
 
 ## Support
 
@@ -100,49 +178,58 @@ first frame usually comes out dark, almost completely black.
 ### Extend the API to accept either a crop region or enable region detection
 
 Either pass in 2 numbers (X & Y), 4 numbers (X, Y, width and height of the crop)
-or a boolean / flag allowing the `detect` function to find the biggest outlined
-region (using a color, not a shade) and crop it out automatically. If this flag
-is enabled, but no region is found, treat that as an error which might indicate
-the user selected an incorrect tab.
+or a boolean / flag allowing the `scan` function to find the marked region and
+crop it out for you (or error if not found - did user select the right tab?).
 
-Also, open the screenshot in a new tab, so tweaking the region numbers or the
-outline placement can be done on the page without losing its state.
+Also, make the screenshot open in a new tab, so tweaking the region numbers or
+the outline placement can be done on the page without losing its state.
 
-### Fix `detect.js` to work with `detect2.png` and `detect3.png`
+### Improve the detection algorithm to be more flexible
 
-For some reason it doesn't like these files even though the rectangle there is
-pretty pronounced. The test is in `test/detect.html`. This should also fix the
-problem in `worker.js` which is not working due to this right now. It seems the
-problem is only with files created in Chrome, in Firefox, this feature works.
-In Safari, the whole thing collapses due to ESM in Web Workers support missing.
+Change the size constraint to not be the exact size, but a minimal and maximal
+size range, both optional ranging from zero to current screen size. The called
+then can provide a guesstimate (or not) and the algorithm performance is
+proportional to the breadth of the possible sweep sizes within the size range.
 
-### Replace and simplify the detection algorithm
-
-I've made the highlight area detection algorithm too generic. It is slow and not
-reliable.
-
-I've developed a replacement for it, which takes several safe assumptions into
-an account:
-
-- The highlighted area will always be rectangular
-- The highlighted area will never be rotated or scaled, only translated
-- The highlighted area will be there and if I can't find it, that's an error
-- The highlighted area will have a known size* (I place the highlight)
-
-The algorithm works by displaying a top-left corner and a bottom-right corner
-markers before the screen capture occurs. The markers are lime and red and they
-are a known distance apart so it is easy to remove false positives. This gives
-us a few more assumptions to rely:
-
-- There will be both the lime top-left marker and the red bottom-right marker
-- The bottom-right marker will be off by width and height from the top-left one
-
-The algorithm as described here is implemented in `wip`. It can be further
-improved by changing the size constraint to not be the exact size, but a minimal
-size and allowing to provide an optional maximal size to check. The algorithm
-would then sweet all combinations of the possible sizes looking for the pair
-marker. This would make it a little more user friendly when using CSS outline
-with relative units for the area highlight.
+This is intended to be used with things like CSS outline with relative units or
+box model shenanigans where the markers might be slightly offset. In this case
+the marked container's dimension could be passed it with some size tolerance.
 
 - [ ] Implement the option to specify a size range instead of size value
-- [ ] Implement this algorithm in Selfie replacing the current awkward one
+
+### Display the guides only once having pressed the button floating and focused
+
+Display the guides in a modal and display only the one for the current browser.
+Hide once the screenshot is collected.
+
+### Check for the marker colors as well as known browser artifacted colors
+
+The `getDisplayMedia` stream is compressed and the compression causes colors to
+change differently in different browsers. To avoid having to raise `tolerance`
+too high, let's check multiple variations of each color for the tolerance:
+
+| Browser              | Red           | Lime          |
+|----------------------|---------------|---------------|
+|                      | 255, 0, 0     | 0, 255, 0     |
+
+- [ ] See if there is a way to get uncompressed stream from the constraints
+- [ ] Do this for marker sizes 1-5 in Firefox, Chrome and Safari to find pool of
+      colors to check for aside from pure red and pure lime
+
+Use this snippet to get the full screen and crop the marker out at each marker
+size, collect the images in the repo and then pull their colors out using a
+script.
+
+```js
+document.body.replaceWith(canvas);
+//document.body.replaceWith(crop(canvas, region));
+```
+
+If this works well, we could go with low or even no tolerance altogether and low
+marker size or even a single pixel marker size. The question is how static this
+compression artifact really is, I'm guessing not enough to be able to drop the
+tolerance altogether in favor or a larger set of checked-for colors.
+
+### See if there is a way to get unscaled getDisplayMedia stream as an option
+
+This would speed up `scan` if the Retina scale was not desired.

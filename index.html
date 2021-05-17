@@ -21,11 +21,13 @@
       to allow the user to obtain a screenshot of the page itself.
     </p>
     <button class="snapButton">Take Screenshot</button>
+    <div id="marker1" class="marker"></div>
     <p>
-      Taking screenshots of parts of the page is also supported, just surround
-      the desired part by a thick, solid color stroke rectangle.
+      Taking screenshots of parts of the page is also supported by displaying 2
+      1-pixel markers defining the rectangular area.
     </p>
-    <button id="detectButton">Take Screenshot with Region Detection</button>
+    <button id="scanButton">Take Screenshot (Area)</button>
+    <div id="marker2" class="marker"></div>
     <p>
       <a href="https://github.com/TomasHubelbauer/selfie">Source code on GitHub</a>
     </p>
@@ -106,30 +108,10 @@
       </div>
     </div>
     <h2 id="usage">Usage</h2>
-    <p>To use Selfie to take a screenshot of another page:</p>
-    <h3>1. Reference the Selfie library from the document / DevTools</h3>
-    <pre>
-&lt;script src="https://tomashubelbauer.github.io/selfie/index.js"&gt;&lt;/script&gt;
-    </pre>
-    <pre>
-const script = document.createElement('script');
-script.src = 'https://tomashubelbauer.github.io/selfie/index.js';
-document.head.append(script);
-    </pre>
-    <h3>2. Call the <code>selfie()</code> method to show the button</h3>
     <p>
-      The <code>getDisplayMedia</code> API must be called from a user gesture.
-      Showing a button and binding the screenshotting to its <code>click</code>
-      event is an easy way to satisfy this constraint.
-    </p>
-    <p>
-      The button will appear in the top left corner and will hide after click.
-    </p>
-    <button class="snapButton">Selfie</button>
-    <h3>3. Click the button and save the image!</h3>
-    <p>
-      After clicking the button, the page will be replaced with the screenshot
-      image which you can right-click to save. See <a href="#guides">Guides</a>.
+      Refer to the
+      <a href="https://github.com/tomashubelbauer/selfie#usage">GitHub readme</a>
+      for examples of usage on other people's pages as well as your own.
     </p>
   </body>
 </html>
