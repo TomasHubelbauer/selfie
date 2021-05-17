@@ -212,11 +212,6 @@ the marked container's dimension could be passed it with some size tolerance.
 
 - [ ] Implement the option to specify a size range instead of size value
 
-### Display the guides only once having pressed the button floating and focused
-
-Display the guides in a modal and display only the one for the current browser.
-Hide once the screenshot is collected.
-
 ### Check for the marker colors as well as known browser artifacted colors
 
 The `getDisplayMedia` stream is compressed and the compression causes colors to
