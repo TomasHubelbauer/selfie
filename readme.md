@@ -190,15 +190,6 @@ than to lose the Retina resolution.
 
 ## To-Do
 
-### Extend the API to accept either a crop region or enable region detection
-
-Either pass in 2 numbers (X & Y), 4 numbers (X, Y, width and height of the crop)
-or a boolean / flag allowing the `scan` function to find the marked region and
-crop it out for you (or error if not found - did user select the right tab?).
-
-Also, make the screenshot open in a new tab, so tweaking the region numbers or
-the outline placement can be done on the page without losing its state.
-
 ### Improve the detection algorithm to be more flexible
 
 Change the size constraint to not be the exact size, but a minimal and maximal
