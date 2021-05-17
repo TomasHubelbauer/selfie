@@ -230,6 +230,38 @@ marker size or even a single pixel marker size. The question is how static this
 compression artifact really is, I'm guessing not enough to be able to drop the
 tolerance altogether in favor or a larger set of checked-for colors.
 
-### See if there is a way to get unscaled getDisplayMedia stream as an option
+### See if there is a way to detect/get unscaled getDisplayMedia stream
 
 This would speed up `scan` if the Retina scale was not desired.
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints#resizemode
+
+This might allow simplifying the algorithm as to not to have to try both normal
+and Retina sizes.
+
+Maybe also try to detect Retina by checking the track settings and capabilities.
+```js
+const pixelRatio = track.getCapabilities().max.height / track.getSettings().height;
+```
+
+https://github.com/w3c/mediacapture-screen-share/issues/35
+
+Also `window.devicePixelRatio` but maybe use that as a starting point in the
+array of scales to try instead of the only one?
+
+### Configure the media stream constraints better
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/cursor
+
+Disable cursor because we are not waiting for the user to point anywhere.
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/displaySurface
+
+Consider preselecting `browser` so we automatically get out current tab?
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface
+
+Not sure what this is completely, so check by checking what I get for the
+various options provided by the browser:
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
