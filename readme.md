@@ -275,3 +275,17 @@ Once the feature is ironed out in regards to the color marker matching under the
 color compression, merge the two buttons into one, update the instructions to
 say to either select the current tab or the entire screen and use the markers to
 crop out the tab no matter which was selected.
+
+### Replace the marker divs with a `::before` and `::after` with `fixed` on body
+
+I am not sure if I'll be able to calculate the size between the pseudoelements
+so maybe this should be done once the exact size no longer needs to be passed in
+and I'd just pass in the viewport size with a size tolerance of about 20 or
+something like that.
+
+### Fix the area scanning being broken now again
+
+### Merge the main buttons with the guide buttons and have a fallback guide
+
+It is enough to show them in the guide and if there is a browser I don't have a
+guide for, I'll only show the buttons in a fallback guide `div`.
