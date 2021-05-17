@@ -173,6 +173,21 @@ want to use it. Use `await new Promise(resolve => setTimeout(resolve, 100))` to
 give the web cam time to adjust the picture and then proceed. Without this, the
 first frame usually comes out dark, almost completely black.
 
+### Display scaling
+
+By default, Firefox and Safari return Retina scaled stream whereas Chrome does
+not.
+
+`track.getCapabilities().max.height / track.getSettings().height` will not work
+in Firefox due to its lack of support for `getCapabilities`. `screen.width` and
+`screen.height` comparison to track dimensions will not work where the whole
+screen is not being shared. `window.devicePixelRatio` will not work because
+Chrome returns 2 for it like others but its stream is not scaled.
+
+It is possible to force non-scaled stream by setting `video.width` constraint to
+`screen.width` (which is unscaled), but I'd rather check two possible scales
+than to lose the Retina resolution.
+
 ## To-Do
 
 ### Extend the API to accept either a crop region or enable region detection
@@ -230,26 +245,14 @@ marker size or even a single pixel marker size. The question is how static this
 compression artifact really is, I'm guessing not enough to be able to drop the
 tolerance altogether in favor or a larger set of checked-for colors.
 
-### See if there is a way to detect/get unscaled getDisplayMedia stream
+### Use `window.devicePixelRatio` as the first scale to try in the scale array
 
-This would speed up `scan` if the Retina scale was not desired.
-
-https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints#resizemode
-
-This might allow simplifying the algorithm as to not to have to try both normal
-and Retina sizes.
-
-Maybe also try to detect Retina by checking the track settings and capabilities.
-```js
-const pixelRatio = track.getCapabilities().max.height / track.getSettings().height;
-```
-
-https://github.com/w3c/mediacapture-screen-share/issues/35
-
-Also `window.devicePixelRatio` but maybe use that as a starting point in the
-array of scales to try instead of the only one?
+Have an array of `window.devicePixelRatio` and one unless it already is one in
+which case try only the normal scale in `snap.js`.
 
 ### Configure the media stream constraints better
+
+All of these are only in Opera right now!
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/cursor
 
