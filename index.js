@@ -4,9 +4,13 @@ import crop from './crop.js';
 
 window.addEventListener('load', async () => {
   if (!navigator.mediaDevices.getDisplayMedia) {
-    document
-      .getElementById('buttonsDiv')
-      .replaceWith('getDisplayMedia API is not supported in this browser.');
+    const buttonsDiv = document.getElementById('buttonsDiv');
+    const code = document.createElement('code');
+    code.textContent = 'getDisplayMedia';
+    const fragment = document.createDocumentFragment();
+    fragment.append(code);
+    fragment.append(' API is not supported in this browser.');
+    buttonsDiv.replaceWith(fragment);
   }
 
   const buttons = document.getElementsByClassName('snapButton');
