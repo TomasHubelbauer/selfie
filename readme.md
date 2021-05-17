@@ -115,3 +115,34 @@ pretty pronounced. The test is in `test/detect.html`. This should also fix the
 problem in `worker.js` which is not working due to this right now. It seems the
 problem is only with files created in Chrome, in Firefox, this feature works.
 In Safari, the whole thing collapses due to ESM in Web Workers support missing.
+
+### Replace and simplify the detection algorithm
+
+I've made the highlight area detection algorithm too generic. It is slow and not
+reliable.
+
+I've developed a replacement for it, which takes several safe assumptions into
+an account:
+
+- The highlighted area will always be rectangular
+- The highlighted area will never be rotated or scaled, only translated
+- The highlighted area will be there and if I can't find it, that's an error
+- The highlighted area will have a known size* (I place the highlight)
+
+The algorithm works by displaying a top-left corner and a bottom-right corner
+markers before the screen capture occurs. The markers are lime and red and they
+are a known distance apart so it is easy to remove false positives. This gives
+us a few more assumptions to rely:
+
+- There will be both the lime top-left marker and the red bottom-right marker
+- The bottom-right marker will be off by width and height from the top-left one
+
+The algorithm as described here is implemented in `wip`. It can be further
+improved by changing the size constraint to not be the exact size, but a minimal
+size and allowing to provide an optional maximal size to check. The algorithm
+would then sweet all combinations of the possible sizes looking for the pair
+marker. This would make it a little more user friendly when using CSS outline
+with relative units for the area highlight.
+
+- [ ] Implement the option to specify a size range instead of size value
+- [ ] Implement this algorithm in Selfie replacing the current awkward one
