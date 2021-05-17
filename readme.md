@@ -212,40 +212,56 @@ too high, let's check multiple variations of each color for the tolerance:
 
 - Browser marker@scale red: 255, 0, 0
 - Browser marker@scale lime: 0, 255, 0
-- Firefox 1×1@2 red: TODO
-- Firefox 1×1@2 lime: TODO
-- Firefox 2×2@2 red: TODO
-- Firefox 2×2@2 lime: TODO
-- Firefox 3×3@2 red: TODO
-- Firefox 3×3@2 lime: TODO
-- Firefox 4×4@2 red: TODO
-- Firefox 4×4@2 lime: TODO
-- Firefox 5×5@2 red: TODO
-- Firefox 5×5@2 lime: TODO
+- Firefox 1×1@2 red: ![](firefox-1-2-red.png)
+- Firefox 1×1@2 lime: ![](firefox-1-2-lime.png)
+- Firefox 2×2@2 red: ![](firefox-2-2-red.png)
+- Firefox 2×2@2 lime: ![](firefox-2-2-lime.png)
+- Firefox 3×3@2 red: ![](firefox-3-2-red.png)
+- Firefox 3×3@2 lime: ![](firefox-3-2-lime.png)
+- Firefox 4×4@2 red: ![](firefox-4-2-red.png)
+- Firefox 4×4@2 lime: ![](firefox-4-2-lime.png)
+- Firefox 5×5@2 red: ![](firefox-5-2-red.png)
+- Firefox 5×5@2 lime: ![](firefox-5-2-lime.png)
+- Chrome 1×1@2 red: ![](chrome-1-1-red.png)
+- Chrome 1×1@2 lime: ![](chrome-1-1-lime.png)
+- Chrome 2×2@2 red: ![](chrome-2-1-red.png)
+- Chrome 2×2@2 lime: ![](chrome-2-1-lime.png)
+- Chrome 3×3@2 red: ![](chrome-3-1-red.png)
+- Chrome 3×3@2 lime: ![](chrome-3-1-lime.png)
+- Chrome 4×4@2 red: ![](chrome-4-1-red.png)
+- Chrome 4×4@2 lime: ![](chrome-4-1-lime.png)
+- Chrome 5×5@2 red: ![](chrome-5-1-red.png)
+- Chrome 5×5@2 lime: ![](chrome-5-1-lime.png)
+- Safari 1×1@2 red: ![](safari-1-2-red.png)
+- Safari 1×1@2 lime: ![](safari-1-2-lime.png)
+- Safari 2×2@2 red: ![](safari-2-2-red.png)
+- Safari 2×2@2 lime: ![](safari-2-2-lime.png)
+- Safari 3×3@2 red: ![](safari-3-2-red.png)
+- Safari 3×3@2 lime: ![](safari-3-2-lime.png)
+- Safari 4×4@2 red: ![](safari-4-2-red.png)
+- Safari 4×4@2 lime: ![](safari-4-2-lime.png)
+- Safari 5×5@2 red: ![](safari-5-2-red.png)
+- Safari 5×5@2 lime: ![](safari-5-2-lime.png)
 
 How to get these images:
 
-- [ ] Change this away from the Color Meter app as it antialiases - make the
-      canvas zoom 10x and pan on mouse move and commit coords on mouse down & up
-
 1. Set the app to debug mode using `const autoCrop = false;`
 2. Configure the desired marker size using `--marker-size` in CSS
-2. Do a full screen capture and wait for the `canvas` to show up
-3. Open the macOS Digital Color Meter app to use as a pixel magnifying glass
-4. Locate the top-left corner of the first/second marker artifact
-5. Click once to dismiss the Color Meter app and another time to save the coord
-6. Focus the Color Meter app back up for the pixel magnification
-7. Locate the bottom-right corner of the red marker artifact
-8. Click once to dismiss the Color Meter app and another time to save the coord
-9. See a cropped and zoomed artifact `img` pop in showing just the artifact area
-10. Save the image and add it to the list
+3. Do a full screen capture and wait for the `canvas` to show up
+4. Drag and then click on the top-left corner of the first marker area
+5. Drag and then click on the bottom-right corner of the first marker area
+6. Give the marker a name in the prompt: `browser-size-scale-red` (w/o `.png`)
+7. Drag and then click on the top-left corner of the second marker area
+8. Drag and then click on the bottom-right corner of the second marker area
+9. Give the marker a name in the prompt: `browser-size-scale-lime` (w/o `.png`)
+10. Add the image to the above list
 
 The idea is to find the colors the red and lime are compressed into through the
 `getDisplayMedia` compression and use those alongside the pure red and pure lime
 in the algorithm. We could also do browser-detection to only feed the given
 browser its identified compressed colors.
 
-- [ ] Populate the rest of this list for marker size 1-5 and pool the colors
+- [ ] Pool the main color from each of the collected artifact samples/browser
 - [ ] Document how static the color artifacting is and if it will be usable
 - [ ] Update the algorithm to be able to work with a pool of color candidates
 
@@ -277,3 +293,5 @@ Not sure what this is completely, so check by checking what I get for the
 various options provided by the browser:
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
+
+### Fix the artifact tool color indicator label displaying nonsense when panned

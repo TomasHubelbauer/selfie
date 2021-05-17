@@ -3,7 +3,7 @@ import scan from './scan.js';
 import crop from './crop.js';
 
 window.addEventListener('load', async () => {
-  const autoCrop = true;
+  const autoCrop = false;
   const supported = navigator.mediaDevices.getDisplayMedia;
   if (!supported) {
     const introP = document.getElementById('introP');
@@ -47,29 +47,103 @@ window.addEventListener('load', async () => {
 
           // TODO: Replace with a mousemove handler which shows the canvas zoomed in x10 without antialiasing
           if (!autoCrop) {
-            let x;
-            let y;
-            canvas.addEventListener('mousedown', event => {
-              if (x === undefined && y === undefined) {
-                x = event.offsetX;
-                y = event.offsetY;
-                console.log(x, y);
+            const zoom = 10;
+            let x = 0;
+            let y = 0;
+
+            let move = true;
+
+            let cropX;
+            let cropY;
+
+            const _canvas = document.createElement('canvas');
+            _canvas.width = canvas.width;
+            _canvas.height = canvas.height;
+
+            const context = _canvas.getContext('2d');
+            context.imageSmoothingEnabled = false;
+            context.drawImage(canvas, x, y, _canvas.width * zoom, _canvas.height * zoom);
+
+            _canvas.addEventListener('mousemove', event => {
+              move = true;
+
+              const { width, height } = _canvas.getBoundingClientRect();
+              const widthFactor = _canvas.width / width;
+              const heightFactor = _canvas.height / height;
+
+              if (event.buttons === 1) {
+                x += event.movementX * widthFactor * zoom;
+                y += event.movementY * heightFactor * zoom;
+              }
+
+              const textureX = ~~(((event.offsetX * widthFactor) - x) / zoom);
+              const textureY = ~~(((event.offsetY * heightFactor) - y) / zoom);
+
+              context.clearRect(0, 0, _canvas.width, _canvas.height);
+              context.drawImage(canvas, x, y, _canvas.width * zoom, _canvas.height * zoom);
+
+              context.strokeRect(x + textureX * zoom, y + textureY * zoom, zoom, zoom);
+
+              const pixel = context.getImageData(x + textureX * zoom + 1, y + textureY * zoom + 1, 1, 1).data.slice(0, 3).join(', ');
+              const text = `${textureX}×${textureY}: ${pixel}`;
+              context.font = 'normal 50pt sans-serif';
+              const length = context.measureText(text).width;
+
+              context.fillStyle = 'white';
+              context.fillRect(0, 0, length + 25, 75);
+              context.fillStyle = 'black';
+              context.fillText(text, 15, 55);
+            });
+
+            _canvas.addEventListener('mouseup', event => {
+              if (move) {
+                move = false;
                 return;
               }
 
-              const width = event.offsetX - x + 1;
-              const height = event.offsetY - y + 1;
-              console.log(event.offsetX, event.offsetY, width, height);
+              move = false;
+
+              const { width, height } = _canvas.getBoundingClientRect();
+              const widthFactor = _canvas.width / width;
+              const heightFactor = _canvas.height / height;
+
+              if (cropX === undefined && cropY === undefined) {
+                cropX = ~~(((event.offsetX * widthFactor) - x) / zoom);
+                cropY = ~~(((event.offsetY * heightFactor) - y) / zoom);
+                console.log(cropX, cropY);
+                return;
+              }
+
+              const cropWidth = ~~(((event.offsetX * widthFactor) - x) / zoom) - cropX + 1;
+              const cropHeight = ~~(((event.offsetY * heightFactor) - y) / zoom) - cropY + 1;
+              console.log(~~(((event.offsetX * widthFactor) - x) / zoom), ~~(((event.offsetY * heightFactor) - y) / zoom), cropWidth, cropHeight);
+
               const img = document.createElement('img');
-              img.src = crop(canvas, { x, y, width, height }).toDataURL();
-              img.width = width * 10;
-              img.height = height * 10;
+              img.src = crop(canvas, { x: cropX, y: cropY, width: cropWidth, height: cropHeight }).toDataURL();
+              img.width = cropWidth * 10;
+              img.height = cropHeight * 10;
               img.style.imageRendering = 'crisp-edges';
-              canvas.replaceWith(img);
+
+              cropX = undefined;
+              cropY = undefined;
+
+              const name = prompt('browser-marker-scale-color');
+              if (!name) {
+                return;
+              }
+
+              const a = document.createElement('a');
+              a.download = name;
+              a.href = img.src;
+              a.click();
             });
+
+            fragment.append(_canvas);
+          }
+          else {
+            fragment.append(canvas);
           }
 
-          fragment.append(canvas);
           document.body.replaceWith(fragment);
           return;
         }
