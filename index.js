@@ -3,6 +3,7 @@ import scan from './scan.js';
 import crop from './crop.js';
 
 window.addEventListener('load', async () => {
+  const autoCrop = true;
   const supported = navigator.mediaDevices.getDisplayMedia;
   if (!supported) {
     const introP = document.getElementById('introP');
@@ -36,9 +37,40 @@ window.addEventListener('load', async () => {
 
         // TODO: Encode known Firefox, Chrome & Safari color values when encoded
         const region = scan(context, 120, width, height, marker, false);
-        if (region === undefined) {
-          document.body.replaceWith(canvas);
-          alert('No markers found. Did you select the right tab or full screen?');
+        if (region === undefined || !autoCrop) {
+          const fragment = document.createDocumentFragment();
+          if (autoCrop) {
+            const center = document.createElement('center');
+            center.textContent = 'No markers found. Did you select the right tab or full screen?';
+            fragment.append(center);
+          }
+
+          if (!autoCrop) {
+            canvas.className = 'debug';
+            let x;
+            let y;
+            canvas.addEventListener('mousedown', event => {
+              if (x === undefined && y === undefined) {
+                x = event.offsetX;
+                y = event.offsetY;
+                console.log(x, y);
+                return;
+              }
+
+              const width = event.offsetX - x;
+              const height = event.offsetY - y;
+              console.log(event.offsetX, event.offsetY, width, height);
+              const img = document.createElement('img');
+              img.src = crop(canvas, { x, y, width, height }).toDataURL();
+              img.width = width * 10;
+              img.height = height * 10;
+              img.style.imageRendering = 'crisp-edges';
+              canvas.replaceWith(img);
+            });
+          }
+
+          fragment.append(canvas);
+          document.body.replaceWith(fragment);
           return;
         }
 

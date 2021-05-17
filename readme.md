@@ -202,6 +202,7 @@ box model shenanigans where the markers might be slightly offset. In this case
 the marked container's dimension could be passed it with some size tolerance.
 
 - [ ] Implement the option to specify a size range instead of size value
+- [ ] Default the size range to the marker size if not provided explicitly
 
 ### Check for the marker colors as well as known browser artifacted colors
 
@@ -209,34 +210,51 @@ The `getDisplayMedia` stream is compressed and the compression causes colors to
 change differently in different browsers. To avoid having to raise `tolerance`
 too high, let's check multiple variations of each color for the tolerance:
 
-| Browser              | Red           | Lime          |
-|----------------------|---------------|---------------|
-|                      | 255, 0, 0     | 0, 255, 0     |
+- Browser marker@scale red: 255, 0, 0
+- Browser marker@scale lime: 0, 255, 0
+- Firefox 1×1@2 red: TODO
+- Firefox 1×1@2 lime: TODO
+- Firefox 2×2@2 red: TODO
+- Firefox 2×2@2 lime: TODO
+- Firefox 3×3@2 red: TODO
+- Firefox 3×3@2 lime: TODO
+- Firefox 4×4@2 red: TODO
+- Firefox 4×4@2 lime: TODO
+- Firefox 5×5@2 red: TODO
+- Firefox 5×5@2 lime: TODO
 
-- [ ] See if there is a way to get uncompressed stream from the constraints
-- [ ] Do this for marker sizes 1-5 in Firefox, Chrome and Safari to find pool of
-      colors to check for aside from pure red and pure lime
+How to get these images:
 
-Use this snippet to get the full screen and crop the marker out at each marker
-size, collect the images in the repo and then pull their colors out using a
-script.
+1. Set the app to debug mode using `const autoCrop = false;`
+2. Configure the desired marker size using `--marker-size` in CSS
+2. Do a full screen capture and wait for the `canvas` to show up
+3. Open the macOS Digital Color Meter app to use as a pixel magnifying glass
+4. Locate the top-left corner of the first/second marker artifact
+5. Click once to dismiss the Color Meter app and another time to save the coord
+6. Focus the Color Meter app back up for the pixel magnification
+7. Locate the bottom-right corner of the red marker artifact
+8. Click once to dismiss the Color Meter app and another time to save the coord
+9. See a cropped and zoomed artifact `img` pop in showing just the artifact area
+10. Save the image and add it to the list
 
-```js
-document.body.replaceWith(canvas);
-//document.body.replaceWith(crop(canvas, region));
-```
+The idea is to find the colors the red and lime are compressed into through the
+`getDisplayMedia` compression and use those alongside the pure red and pure lime
+in the algorithm. We could also do browser-detection to only feed the given
+browser its identified compressed colors.
 
-If this works well, we could go with low or even no tolerance altogether and low
-marker size or even a single pixel marker size. The question is how static this
-compression artifact really is, I'm guessing not enough to be able to drop the
-tolerance altogether in favor or a larger set of checked-for colors.
+- [ ] Populate the rest of this list for marker size 1-5 and pool the colors
+- [ ] Document how static the color artifacting is and if it will be usable
+- [ ] Update the algorithm to be able to work with a pool of color candidates
+
+If this works as I'm hoping it might, it should be possible to use this data to
+always have a single-pixel marker and low or no color tolerance.
 
 ### Use `window.devicePixelRatio` as the first scale to try in the scale array
 
 Have an array of `window.devicePixelRatio` and one unless it already is one in
 which case try only the normal scale in `snap.js`.
 
-### Configure the media stream constraints better
+### Configure the media stream constraints better once they are well supported
 
 All of these are only in Opera right now!
 
@@ -246,7 +264,9 @@ Disable cursor because we are not waiting for the user to point anywhere.
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/displaySurface
 
-Consider preselecting `browser` so we automatically get out current tab?
+Consider preselecting `browser` so we automatically get out current tab and do
+not have to ask the user to select it. We'd still do the auto-crop but just to
+get rid of the browser UI and handle Safari which still returns full screen.
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface
 

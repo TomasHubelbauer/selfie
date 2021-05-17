@@ -75,6 +75,14 @@ canvas {
   box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
   display: block;
   margin: 0 auto;
+}
+
+canvas:not(.debug) {
   max-height: 100vh;
   max-width: 100vw;
+}
+
+canvas.debug {
+  /* Move off the screen side to prevent cursor changing to window resize one */
+  margin: 1em;
 }
