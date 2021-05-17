@@ -5,7 +5,7 @@ import detect from './detect.js';
 
 window.addEventListener('load', async () => {
   const autoCrop = true;
-  const supported = navigator.mediaDevices.getDisplayMedia;
+  const supported = !!navigator.mediaDevices.getDisplayMedia;
   if (!supported) {
     const introP = document.getElementById('introP');
     const code = document.createElement('code');
