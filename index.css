@@ -3,8 +3,36 @@ body {
   margin: 1em 1em 50vh;
   text-align: center;
 
-  /* Note that this variable is also referenced in the JavaScript code */
-  --markerSize: 1px;
+  /* Note that these variable are also referenced in the JavaScript code */
+
+  --marker-size: 5px;
+  --marker-border: 1px;
+}
+
+body.markers::before { display: block; }
+body::before {
+  background: red;
+  border: var(--marker-border) solid white;
+  content: '';
+  display: none;
+  height: var(--marker-size);
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: var(--marker-size);
+}
+
+body.markers::after { display: block; }
+body::after {
+  background: lime;
+  bottom: 0;
+  border: var(--marker-border) solid white;
+  content: '';
+  display: none;
+  height: var(--marker-size);
+  position: fixed;
+  right: 0;
+  width: var(--marker-size);
 }
 
 body.firefox .guideDiv.firefox { display: initial; }
@@ -28,28 +56,6 @@ h1 {
 
 h1 img {
   margin: 0 1em 0;
-}
-
-.marker {
-  border: 1px solid white;
-  display: block;
-  height: var(--markerSize);
-  visibility: hidden;
-  width: var(--markerSize);
-}
-
-.marker.visible {
-  visibility: initial;
-}
-
-#marker1 {
-  background: red;
-  margin: 0 0 0 25vw;
-}
-
-#marker2 {
-  background: lime;
-  margin: 0 0 0 75vw;
 }
 
 .guideDiv {

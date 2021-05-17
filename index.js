@@ -28,26 +28,21 @@ window.addEventListener('load', async () => {
   const scanButton = document.getElementById('scanButton');
   scanButton.addEventListener('click', async () => {
     try {
-      const marker1 = document.getElementById('marker1');
-      const bounds1 = marker1.getBoundingClientRect();
+      // Calculate the horizontal and vertical distance between marker midpoints
+      const marker = parseInt(window.getComputedStyle(document.body).getPropertyValue('--marker-size'));
+      const border = parseInt(window.getComputedStyle(document.body).getPropertyValue('--marker-border'));
+      const left = parseInt(window.getComputedStyle(document.body, '::before').left);
+      const top = parseInt(window.getComputedStyle(document.body, '::before').top);
+      const right = parseInt(window.getComputedStyle(document.body, '::after').right);
+      const bottom = parseInt(window.getComputedStyle(document.body, '::after').bottom);
+      const width = window.innerWidth - right - left - border * 2 - marker;
+      const height = window.innerHeight - bottom - top - border * 2 - marker;
 
-      const marker2 = document.getElementById('marker2');
-      const bounds2 = marker2.getBoundingClientRect();
-
-      const width = bounds2.left - bounds1.left;
-      const height = bounds2.top - bounds1.top;
-
-      marker1.classList.toggle('visible', true);
-      marker2.classList.toggle('visible', true);
-
+      document.body.classList.toggle('markers', true);
       const canvas = await snap();
-
-      marker1.classList.toggle('visible', false);
-      marker2.classList.toggle('visible', false);
+      document.body.classList.toggle('markers', false);
 
       const context = canvas.getContext('2d');
-
-      const marker = parseInt(window.getComputedStyle(document.body).getPropertyValue('--markerSize'));
 
       // TODO: Encode known Firefox, Chrome & Safari color values when encoded
       const region = scan(context, 120, width, height, marker, false);
