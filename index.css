@@ -5,7 +5,8 @@ body {
 
   /* Note that these variable are also referenced in the JavaScript code */
 
-  --marker-size: 5px;
+  /* TODO: Switch this to 1px once I get that work on in Chrome */
+  --marker-size: 3px;
   --marker-border: 1px;
 }
 
@@ -25,7 +26,7 @@ body::before {
 body.markers::after { display: block; }
 body::after {
   background: lime;
-  bottom: 0;
+  bottom: 10px; /* macOS rounded window corner adjustment */
   border: var(--marker-border) solid white;
   content: '';
   display: none;

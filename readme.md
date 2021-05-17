@@ -188,6 +188,67 @@ It is possible to force non-scaled stream by setting `video.width` constraint to
 `screen.width` (which is unscaled), but I'd rather check two possible scales
 than to lose the Retina resolution.
 
+### Screen capture compression color artifacts
+
+The `getDisplayMedia` stream is compressed and the compression causes colors to
+change differently in different browsers. To avoid having to raise `tolerance`
+too high, I checked how the compression affects the pure color at different
+marker size mid-points.
+
+I use the knowledge of the marker size and browser combination we're dealing
+with to tell the algorithm to use a different color than the pure red or lime so
+we don't have to raise the `tolerance` value high (which increase the false
+positive rate and thus is computationally more expensive).
+
+I was able to build a dataset of what colors I should compare against at various
+marker sizes instead of pure red and lime so that I can keep the `tolerance`
+value low, not get false positives and be more likely to find the markers. This
+also enables the usage of reliable single-pixel markers in all supported
+browsers, which was previously not possible with a more generic algorithm.
+
+| Marker@scale | Red midpoint                      | Lime midpoint                        |
+|--------------|-----------------------------------|--------------------------------------|
+| Firefox 1@2  | ![](firefox-1-2-red.png) 253 0 0  | ![](firefox-1-2-lime.png) 0 255 2    |
+| Firefox 2@2  | ![](firefox-2-2-red.png) 253 0 0  | ![](firefox-2-2-lime.png) 0 255 2    |
+| Firefox 3@2  | ![](firefox-3-2-red.png) 253 0 0  | ![](firefox-3-2-lime.png) 0 255 2    |
+| Firefox 4@2  | ![](firefox-4-2-red.png) 253 0 0  | ![](firefox-4-2-lime.png) 0 255 2    |
+| Firefox 5@2  | ![](firefox-5-2-red.png) 253 0 0  | ![](firefox-5-2-lime.png) 0 255 2    |
+| Safari 1@2   | ![](safari-1-2-red.png) 151 28 26 | ![](safari-1-2-lime.png) 99 215 98   |
+| Safari 2@2   | ![](safari-2-2-red.png) 255 0 0   | ![](safari-2-2-lime.png) 0 255 0     |
+| Safari 3@2   | ![](safari-3-2-red.png) 255 0 0   | ![](safari-3-2-lime.png) 0 255 0     |
+| Safari 4@2   | ![](safari-4-2-red.png) 255 0 0   | ![](safari-4-2-lime.png) 0 255 0     |
+| Safari 5@2   | ![](safari-5-2-red.png) 255 0 0   | ![](safari-5-2-lime.png) 0 255 0     |
+| Chrome 1@1   | ![](chrome-1-1-red.png) 124 97 96 | ![](chrome-1-1-lime.png) 179 197 174 |
+| Chrome 2@1   | ![](chrome-2-1-red.png) 138 91 88 | ![](chrome-2-1-lime.png) 161 211 147 |
+| Chrome 3@1   | ![](chrome-3-1-red.png) 206 64 51 | ![](chrome-3-1-lime.png) 131 235 103 |
+| Chrome 4@1   | ![](chrome-4-1-red.png) 206 64 51 | ![](chrome-4-1-lime.png) 122 241 91  |
+| Chrome 5@1   | ![](chrome-5-1-red.png) 236 51 35 | ![](chrome-5-1-lime.png) 113 249 77  |
+
+In Firefox, the colors are nicely stable and no adjustment is needed with only
+low tolerance of ~5 compared to pure is needed even for single-pixel markers.
+
+In Safari, there needs to be an exception for the single-pixel marker, but above
+that, the color is also stable and very low tolerance is needed compared to pure
+color.
+
+In Chrome, the colors are very washed out and change drastically with the size
+of the marker even up to size 5. For Chrome, I have encoded the whole array of
+the five possible adjustments. This enabled me to keep the `tolerance` value low
+and results in reliable marker lookup even for a single-pixel marker.
+
+How I get the images in the table:
+
+1. Set the app to debug mode using `const autoCrop = false;`
+2. Configure the desired marker size using `--marker-size` in CSS
+3. Do a full screen capture and wait for the `canvas` to show up
+4. Drag and then click on the top-left corner of the first marker area
+5. Drag and then click on the bottom-right corner of the first marker area
+6. Give the marker a name in the prompt: `browser-size-scale-red` (w/o `.png`)
+7. Drag and then click on the top-left corner of the second marker area
+8. Drag and then click on the bottom-right corner of the second marker area
+9. Give the marker a name in the prompt: `browser-size-scale-lime` (w/o `.png`)
+10. Add the image to the above list
+
 ## To-Do
 
 ### Improve the detection algorithm to be more flexible
@@ -202,76 +263,24 @@ box model shenanigans where the markers might be slightly offset. In this case
 the marked container's dimension could be passed it with some size tolerance.
 
 - [ ] Implement the option to specify a size range instead of size value
-- [ ] Default the size range to the marker size if not provided explicitly
 
-### Check for the marker colors as well as known browser artifacted colors
+### Fix Chrome not scanning with marker < 3 or scale 2, 1 instead of 1, 2 order
 
-The `getDisplayMedia` stream is compressed and the compression causes colors to
-change differently in different browsers. To avoid having to raise `tolerance`
-too high, let's check multiple variations of each color for the tolerance:
+Sometimes Chrome is failing such that the whole screen canvas is shown but not
+the error message about not having found the markers - fix that too.
 
-- Browser marker@scale red: 255, 0, 0
-- Browser marker@scale lime: 0, 255, 0
-- Firefox 1×1@2 red: ![](firefox-1-2-red.png)
-- Firefox 1×1@2 lime: ![](firefox-1-2-lime.png)
-- Firefox 2×2@2 red: ![](firefox-2-2-red.png)
-- Firefox 2×2@2 lime: ![](firefox-2-2-lime.png)
-- Firefox 3×3@2 red: ![](firefox-3-2-red.png)
-- Firefox 3×3@2 lime: ![](firefox-3-2-lime.png)
-- Firefox 4×4@2 red: ![](firefox-4-2-red.png)
-- Firefox 4×4@2 lime: ![](firefox-4-2-lime.png)
-- Firefox 5×5@2 red: ![](firefox-5-2-red.png)
-- Firefox 5×5@2 lime: ![](firefox-5-2-lime.png)
-- Chrome 1×1@2 red: ![](chrome-1-1-red.png)
-- Chrome 1×1@2 lime: ![](chrome-1-1-lime.png)
-- Chrome 2×2@2 red: ![](chrome-2-1-red.png)
-- Chrome 2×2@2 lime: ![](chrome-2-1-lime.png)
-- Chrome 3×3@2 red: ![](chrome-3-1-red.png)
-- Chrome 3×3@2 lime: ![](chrome-3-1-lime.png)
-- Chrome 4×4@2 red: ![](chrome-4-1-red.png)
-- Chrome 4×4@2 lime: ![](chrome-4-1-lime.png)
-- Chrome 5×5@2 red: ![](chrome-5-1-red.png)
-- Chrome 5×5@2 lime: ![](chrome-5-1-lime.png)
-- Safari 1×1@2 red: ![](safari-1-2-red.png)
-- Safari 1×1@2 lime: ![](safari-1-2-lime.png)
-- Safari 2×2@2 red: ![](safari-2-2-red.png)
-- Safari 2×2@2 lime: ![](safari-2-2-lime.png)
-- Safari 3×3@2 red: ![](safari-3-2-red.png)
-- Safari 3×3@2 lime: ![](safari-3-2-lime.png)
-- Safari 4×4@2 red: ![](safari-4-2-red.png)
-- Safari 4×4@2 lime: ![](safari-4-2-lime.png)
-- Safari 5×5@2 red: ![](safari-5-2-red.png)
-- Safari 5×5@2 lime: ![](safari-5-2-lime.png)
+Chrome does not seem able to scan if the marker size is less than 3. Maybe the
+tolerance or the adjusted color data need to be tweaked further.
 
-How to get these images:
+It also won't scan if the scale array is `[2, 1]` instead of `[1, 2]`, which
+would be the preferable way to configure it to ideally get the hit on the first
+scale loop iteration.
 
-1. Set the app to debug mode using `const autoCrop = false;`
-2. Configure the desired marker size using `--marker-size` in CSS
-3. Do a full screen capture and wait for the `canvas` to show up
-4. Drag and then click on the top-left corner of the first marker area
-5. Drag and then click on the bottom-right corner of the first marker area
-6. Give the marker a name in the prompt: `browser-size-scale-red` (w/o `.png`)
-7. Drag and then click on the top-left corner of the second marker area
-8. Drag and then click on the bottom-right corner of the second marker area
-9. Give the marker a name in the prompt: `browser-size-scale-lime` (w/o `.png`)
-10. Add the image to the above list
-
-The idea is to find the colors the red and lime are compressed into through the
-`getDisplayMedia` compression and use those alongside the pure red and pure lime
-in the algorithm. We could also do browser-detection to only feed the given
-browser its identified compressed colors.
-
-- [ ] Pool the main color from each of the collected artifact samples/browser
-- [ ] Document how static the color artifacting is and if it will be usable
-- [ ] Update the algorithm to be able to work with a pool of color candidates
-
-If this works as I'm hoping it might, it should be possible to use this data to
-always have a single-pixel marker and low or no color tolerance.
-
-### Use `window.devicePixelRatio` as the first scale to try in the scale array
-
-Have an array of `window.devicePixelRatio` and one unless it already is one in
-which case try only the normal scale in `snap.js`.
+It also won't scan if the bottom-right marker is obscured by the window rounded
+corner which I think used to work? But I'm not sure. It sounds like it shouldn't
+have worked since the marker wasn't there but it did work before, but maybe it
+was because I had the DevTools open each time bumping the marker up out of the
+rounded corner.
 
 ### Configure the media stream constraints better once they are well supported
 
@@ -294,4 +303,4 @@ various options provided by the browser:
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
 
-### Fix the artifact tool color indicator label displaying nonsense when panned
+### Fix the artifact tool color indicator label displaying bad color when panned

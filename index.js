@@ -1,9 +1,10 @@
 import snap from './snap.js';
 import scan from './scan.js';
 import crop from './crop.js';
+import detect from './detect.js';
 
 window.addEventListener('load', async () => {
-  const autoCrop = false;
+  const autoCrop = true;
   const supported = navigator.mediaDevices.getDisplayMedia;
   if (!supported) {
     const introP = document.getElementById('introP');
@@ -152,21 +153,11 @@ window.addEventListener('load', async () => {
       }
       catch (error) {
         alert(error);
+        throw error;
       }
     });
   }
 
-  // Display usage instructions for the current browser, or none if too niche
-  if (navigator.userAgent.indexOf("Chrome") != -1) {
-    document.body.classList.toggle('chrome');
-  }
-  else if (navigator.userAgent.indexOf("Safari") != -1) {
-    document.body.classList.toggle('safari');
-  }
-  else if (navigator.userAgent.indexOf("Firefox") != -1) {
-    document.body.classList.toggle('firefox');
-  }
-  else if (supported) {
-    document.body.classList.toggle('other');
-  }
+  // Display usage instructions for the current browser, or generic if too niche
+  document.body.classList.toggle(detect(), supported);
 });
