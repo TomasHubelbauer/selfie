@@ -268,3 +268,10 @@ Not sure what this is completely, so check by checking what I get for the
 various options provided by the browser:
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
+
+### Merge the home page buttons into one with implicit auto-crop
+
+Once the feature is ironed out in regards to the color marker matching under the
+color compression, merge the two buttons into one, update the instructions to
+say to either select the current tab or the entire screen and use the markers to
+crop out the tab no matter which was selected.

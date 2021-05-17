@@ -7,6 +7,16 @@ body {
   --markerSize: 1px;
 }
 
+body.firefox .guideDiv.firefox { display: initial; }
+body.firefox .guideDiv.safari { display: none; }
+body.firefox .guideDiv.chrome { display: none; }
+body.safari .guideDiv.firefox { display: none; }
+body.safari .guideDiv.safari { display: initial; }
+body.safari .guideDiv.chrome { display: none; }
+body.chrome .guideDiv.firefox { display: none; }
+body.chrome .guideDiv.safari { display: none; }
+body.chrome .guideDiv.chrome { display: initial; }
+
 a {
   text-decoration: none;
 }
@@ -16,7 +26,7 @@ h1 {
   display: inline-flex;
 }
 
-h1 img.icon {
+h1 img {
   margin: 0 1em 0;
 }
 
@@ -42,33 +52,17 @@ h1 img.icon {
   margin: 0 0 0 75vw;
 }
 
-#guidesDiv {
-  display: flex;
-  gap: 1em;
-}
-
 .guideDiv {
+  display: none;
   flex: 1;
 }
 
-.guideDiv h2 {
-  align-items: center;
-  display: inline-flex;
-}
-
 .guideDiv img.icon {
-  margin: 0 1em 0;
   width: 3em;
 }
 
 .guideDiv img {
   max-width: 300px;
-}
-
-@media (orientation: portrait) {
-  #guidesDiv {
-    flex-direction: column;
-  }
 }
 
 canvas {
