@@ -268,8 +268,3 @@ Not sure what this is completely, so check by checking what I get for the
 various options provided by the browser:
 
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
-
-### Merge the main buttons with the guide buttons and have a fallback guide
-
-It is enough to show them in the guide and if there is a browser I don't have a
-guide for, I'll only show the buttons in a fallback guide `div`.

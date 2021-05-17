@@ -3,7 +3,8 @@ import scan from './scan.js';
 import crop from './crop.js';
 
 window.addEventListener('load', async () => {
-  if (!navigator.mediaDevices.getDisplayMedia) {
+  const supported = navigator.mediaDevices.getDisplayMedia;
+  if (!supported) {
     const introP = document.getElementById('introP');
     const code = document.createElement('code');
     code.textContent = 'getDisplayMedia';
@@ -58,5 +59,8 @@ window.addEventListener('load', async () => {
   }
   else if (navigator.userAgent.indexOf("Firefox") != -1) {
     document.body.classList.toggle('firefox');
+  }
+  else if (supported) {
+    document.body.classList.toggle('other');
   }
 });
