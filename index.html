@@ -13,7 +13,7 @@
       <img src="icon.png" />
       Selfie
     </h1>
-    <p>
+    <p id="introP">
       This page uses the
       <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia">
         <code>getDisplayMedia</code> API
@@ -22,10 +22,6 @@
       <a href="https://github.com/TomasHubelbauer/selfie">
         Source code and documentation on GitHub
       </a>
-    </p>
-    <p id="buttonsDiv">
-      <button class="snapButton">Take Screenshot</button>
-      <button id="scanButton">Take Screenshot (Area)</button>
     </p>
     <div class="guideDiv firefox">
       <img src="firefox.png" class="icon" />
@@ -39,8 +35,9 @@
       <p>Expand the Window Or Screen selector</p>
       <img src="firefox-1.png" />
       <h3>3.</h3>
-      <p>Select the Selfie tab</p>
+      <p>Select the Selfie tab or Entire Screen</p>
       <img src="firefox-2.png" />
+      <p>The tab content will get cropped out automatically.</p>
       <h3>4.</h3>
       <p>Press the Allow button</p>
       <img src="firefox-3.png" />
@@ -58,9 +55,10 @@
         button.
       </p>
       <h3>2.</h3>
-      <p>Safari always provides a capture of the entire screen.</p>
+      <p>Safari only provides a capture of the entire screen.</p>
       <img src="safari-1.png" />
       <p>Press the Allow button</p>
+      <p>The tab content will get cropped out automatically.</p>
       <h3>3.</h3>
       <p>The screenshot will appear.</p>
       <p>Right-click on it and select Save Image As… to download it.</p>
@@ -75,17 +73,15 @@
         button.
       </p>
       <h3>2.</h3>
+      <p>Select Entire Screen item or the Selfie tab Chrome Tabs tab</p>
       <img src="chrome-1.png" />
-      <h3>3.</h3>
-      <p>Select the Chrome Tabs tab</p>
       <img src="chrome-2.png" />
-      <h3>4.</h3>
       <p>Press the Share button</p>
-      <img src="chrome-3.png" />
-      <h3>5.</h3>
+      <p>The tab content will get cropped out automatically.</p>
+      <h3>3.</h3>
       <p>The screenshot will appear.</p>
       <p>Right-click on it and select Save Image As… to download it.</p>
-      <img src="chrome-4.png" />
+      <img src="chrome-3.png" />
     </div>
   </body>
 </html>
