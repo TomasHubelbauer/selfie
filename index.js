@@ -60,6 +60,7 @@ window.addEventListener('load', async () => {
             const _canvas = document.createElement('canvas');
             _canvas.width = canvas.width;
             _canvas.height = canvas.height;
+            _canvas.style.cursor = 'none';
 
             const context = _canvas.getContext('2d');
             context.imageSmoothingEnabled = false;
