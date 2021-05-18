@@ -1,3 +1,5 @@
+import detect from './detect.js';
+
 export default async function snap() {
   const mediaStream = await navigator.mediaDevices.getDisplayMedia();
 
@@ -5,9 +7,10 @@ export default async function snap() {
   video.srcObject = mediaStream;
   await video.play();
 
-  // White for screen share selector UI to go away and for colors to settle in
-  // TODO: Vary this by browser - probably only needed for Chrome
-  await new Promise(resolve => window.setTimeout(resolve, 1000));
+  if (detect() === 'chrome') {
+    // White for screen share selector UI to go away and for colors to settle in
+    await new Promise(resolve => window.setTimeout(resolve, 1000));
+  }
 
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;

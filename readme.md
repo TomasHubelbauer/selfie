@@ -304,11 +304,3 @@ various options provided by the browser:
 https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/logicalSurface#usage_notes
 
 ### Fix the artifact tool color indicator label displaying bad color when panned
-
-### Keep the media delay only in Chrome not in Firefox or Safari
-
-In Safari, the UI is a modal which goes away right away and then an indicator is
-shown in the address bar. In Firefox, an indicator is shown later and the delay
-actually includes it instead of getting to the capture before it appears. In
-Chrome, the UI takes a while to go away, so the whole second should be reserved
-only for it and not hurt the other browsers.
