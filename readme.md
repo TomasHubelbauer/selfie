@@ -141,29 +141,23 @@ supported.
 - [Browser screen share selector UI title hint](notes/browser-screen-share-selector-ui-title-hint.md)
 - [Display scaling](notes/display-scaling.md)
 - [Screen capture compression color artifacts](notes/screen-capture-compression-color-artifacts.md)
+- [Marker pair combinations algorithm](notes/marker-pair-combinations-algorithm.md)
 
 ## To-Do
-
-### Consider adjusting the algorithm for looking for corners separately
-
-To make the size input parameters optional, we can first look for the red marker
-and then the lime marker. If there is one of each, we have our result. If there
-are combinations, we either consult the arguments if provided and see if any of
-the combinations fall within the size ranges, or if none don't, we provide no
-result. If multiple do, we throw an error saying multiple results were found.
 
 ### Improve the detection algorithm to be more flexible
 
 Change the size constraints to not be the exact sizes, but ranges, both optional
 and defaulting from zero to window size on the respective axis. This will allow
-providing a guesstimate instead of knowing the marker distances exactly. The
-performance of the algorithm is proportional to the breath of the search space
-though. The above idea to look for start markers first, end markers second and
-then just comparing the pairs should help here.
+providing a guesstimate instead of knowing the marker distances exactly. 
 
 This is intended to be used with things like CSS outline with relative units or
 box model shenanigans where the markers might be slightly offset. In this case
 the marked container's dimension could be passed it with some size tolerance.
+
+The performance of the algorithm is proportional to the breath of the search
+space though so it still makes a difference to calculate as good a guesstimate
+as possible.
 
 ### Configure the media stream constraints better once they are well supported
 

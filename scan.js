@@ -18,7 +18,7 @@ const tolerance = 2;
 
 const scales = window.devicePixelRatio === 1 ? [1] : [window.devicePixelRatio, 1];
 
-export default function scan(/** @type {CanvasRenderingContext2D} */ context, /** @type {number} */ width, /** @type {number} */ height, log = false) {
+export default function scan(/** @type {CanvasRenderingContext2D} */ context, /** @type {number} */ width, /** @type {number} */ height) {
   // Pick red and lime adjusted to browser compression color artifacts
   const browser = detect();
   const [redR, redG, redB] = red[browser];
@@ -44,7 +44,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
           continue;
         }
 
-        if (log) {
+        if (window.log) {
           console.group(x, y, scale, r, g, b);
         }
 
@@ -60,7 +60,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
 
             const [r, g, b] = imageData.data.slice(index, index + 3);
 
-            if (log) {
+            if (window.log) {
               console.log(x + _x + ~~scaleWidth, y + _y + ~~scaleHeight, scale, r, g, b);
             }
 
@@ -72,7 +72,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
               continue;
             }
 
-            if (log) {
+            if (window.log) {
               console.groupEnd();
             }
 
@@ -80,7 +80,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
           }
         }
 
-        if (log) {
+        if (window.log) {
           console.groupEnd();
         }
       }

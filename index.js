@@ -34,7 +34,7 @@ window.addEventListener('load', async () => {
 
         const context = canvas.getContext('2d');
 
-        const region = scan(context, width, height, false);
+        const region = scan(context, width, height);
         const _canvas = region === undefined ? canvas : crop(canvas, region);
 
         if (region === undefined) {
