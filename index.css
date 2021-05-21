@@ -6,7 +6,7 @@ body {
   /* Note that these variable are also referenced in the JavaScript code */
 
   /* TODO: Switch this to 1px once I get that work on in Chrome */
-  --marker-size: 3px;
+  --marker-size: 1px;
   --marker-border: 1px;
 }
 
@@ -76,6 +76,6 @@ canvas {
   box-shadow: 1px 1px 1ex rgba(0, 0, 0, .5);
   display: block;
   margin: 1ex auto;
-  max-height: calc(100vh - 2ex);
-  max-width: calc(100vw - 2ex);
+  max-height: calc(100vh - 2em);
+  max-width: calc(100vw - 2em);
 }
