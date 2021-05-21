@@ -15,79 +15,71 @@ early stages and there is no implementation yet that I'm aware of.
 
 https://tomashubelbauer.github.io/selfie
 
-## Usage
+## Installation
 
-### To capture someone else's page using DevTools
+### Helper Script
+
+This script displays a button for the user to click and initiate the screen
+share and then either returns the shared surface (tab or screen) or, if selector
+argument is provided, crops the image to just the element's area.
 
 ```js
 const { default: selfie } = await import('https://tomashubelbauer.github.io/selfie/selfie.js');
-selfie();
+selfie(); // or selfie('selector') to capture a given element
 ```
 
-The extra step of clicking the button is required as the `getDisplayMedia` API
-needs to be called from a user gesture.
+The helper script exists to show a sample of implementation, you're most likely
+going to want to build the flow around this yourself, inspired by it.
 
-### To capture the shared tab or full screen (depending on user choice)
-
-Install statically using a `script` tag:
+### `script` Tag
 
 ```html
 <script src="https://tomashubelbauer.github.io/selfie/snap.js"></script>
 ```
 
-Install statically using ESM `import`:
+### ESM `import`
 
 ```js
 import snap from 'https://tomashubelbauer.github.io/selfie/snap.js';
 ```
 
-Install dynamically using ESM `import`:
+### ESM `await import`:
 
 ```js
 const { default: snap } = await import('https://tomashubelbauer.github.io/selfie/snap.js');
 ```
 
-Call the `snap` function in a way that includes user interaction (e.g. a button)
-as the user interaction is required for the `getDisplayMedia` API to be used and
-use the resulting `canvas`.
+## Usage
+
+### Bare Shared Surface
+
+Make a call to `snap` from within a stack trace user interaction initiated.
+Most likely this is going to be a button press. This is a requirement for the
+`getDisplayMedia` API to function correctly. You'll get back a `canvas` element
+containing the shared surface (tab or screen). You can call `toDataURL` on it,
+call `getContext` to further work with the image (e.g. using `getImageData`) or
+do anything else you like with it.
 
 ```js
 button.addEventListener('click', async () => document.body.append(await snap()));
 ```
 
-### To capture a marked area in a page
+### Marked Area
 
-Display two marker pixels, a top-left red one and a bottom-right lime one. Pass
-the dimensions of the rectangle defined by them into the `scan` function. Border
-each marker with a white outline to help prevent the color compression artifacts
-from surrounding pixels.
+Show two pixel markers: red and lime. Surround both pixel markers with a white
+border to remove any effect of the share stream compression on the pixel colors.
+Mark the top-left corner of the area with red and bottom-right with lime.
 
-Install statically using a `script` tag:
+Direct the user to select the current tab or just share the whole screen.
 
-```html
-<script src="https://tomashubelbauer.github.io/selfie/snap.js"></script>
-<script src="https://tomashubelbauer.github.io/selfie/scan.js"></script>
-```
+Make a call to `snap` from within a stack trace user interaction initiated.
+Most likely this is going to be a button press. This is a requirement for the
+`getDisplayMedia` API to function correctly. 
 
-Install statically using ESM `import`:
-
-```js
-import snap from 'https://tomashubelbauer.github.io/selfie/snap.js';
-import scan from 'https://tomashubelbauer.github.io/selfie/scan.js';
-```
-
-Install dynamically using ESM `import`:
-
-```js
-const { default: snap } = await import('https://tomashubelbauer.github.io/selfie/snap.js');
-const { default: scan } = await import('https://tomashubelbauer.github.io/selfie/scan.js');
-```
-
-Call the `snap` function in a way that includes user interaction (e.g. a button)
-as the user interaction is required for the `getDisplayMedia` API to be used.
-Direct the user to share either the page's tab or the full screen. Pass the
-resulting `canvas` as well as the above described dimensions into the `scan`
-function which will return the crop region in the provided `canvas`:
+Hide the pixel markers - they are not needed anymore. Call `scan` with the
+`canvas` from `snap` and provide it with the dimensions of the marked area as
+well. You'll get an object with the marked region information, e.g.:
+`{ x, y, width, height }`.
 
 ```js
 button.addEventListener('click', async () => {
@@ -95,8 +87,9 @@ button.addEventListener('click', async () => {
 });
 ```
 
-You can use the `crop` function provided by Selfie to crop the canvas to the
-found area, just reference `crop.js` the same way you do the other scripts:
+Work with the `canvas` and the region data in any way you like, or use the
+`crop` function provided by Selfie to crop the original `canvas` into a new
+`canvas` with just the marked region.
 
 ```js
 button.addEventListener('click', async () => {
@@ -144,6 +137,17 @@ supported.
 - [Marker pair combinations algorithm](notes/marker-pair-combinations-algorithm.md)
 
 ## To-Do
+
+### Fix the `selfie.js` sample code not working on the page for some reason
+
+Run the project, access the page and run this in the DevTools Console:
+
+```js
+const { default: selfie } = await import('./selfie.js');
+selfie('.snapButton');
+```
+
+`region` is undefined even though both markers are shown.
 
 ### Improve the detection algorithm to be more flexible
 
