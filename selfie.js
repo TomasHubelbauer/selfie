@@ -1,4 +1,4 @@
-import './snap.js';
+import snap from './snap.js';
 
 export default function () {
   const button = document.createElement('button');
