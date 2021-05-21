@@ -2,38 +2,32 @@ body {
   font: normal 10pt sans-serif;
   margin: 1em 1em 50vh;
   text-align: center;
-
-  /* Note that these variable are also referenced in the JavaScript code */
-
-  /* TODO: Switch this to 1px once I get that work on in Chrome */
-  --marker-size: 1px;
-  --marker-border: 1px;
 }
 
 body.markers::before { display: block; }
 body::before {
   background: red;
-  border: var(--marker-border) solid white;
+  border: 1px solid white;
   content: '';
   display: none;
-  height: var(--marker-size);
+  height: 1px;
   left: 0;
   position: fixed;
   top: 0;
-  width: var(--marker-size);
+  width: 1px;
 }
 
 body.markers::after { display: block; }
 body::after {
   background: lime;
   bottom: 10px; /* macOS rounded window corner adjustment */
-  border: var(--marker-border) solid white;
+  border: 1px solid white;
   content: '';
   display: none;
-  height: var(--marker-size);
+  height: 1px;
   position: fixed;
   right: 0;
-  width: var(--marker-size);
+  width: 1px;
 }
 
 body.firefox .guideDiv.firefox { display: initial; }

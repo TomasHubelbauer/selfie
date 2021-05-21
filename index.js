@@ -20,15 +20,13 @@ window.addEventListener('load', async () => {
   for (const button of buttons) {
     button.addEventListener('click', async () => {
       try {
-        // Calculate the horizontal and vertical distance between marker midpoints
-        const marker = parseInt(window.getComputedStyle(document.body).getPropertyValue('--marker-size'));
-        const border = parseInt(window.getComputedStyle(document.body).getPropertyValue('--marker-border'));
+        // Calculate the horizontal and vertical distance between markers
         const left = parseInt(window.getComputedStyle(document.body, '::before').left);
         const top = parseInt(window.getComputedStyle(document.body, '::before').top);
         const right = parseInt(window.getComputedStyle(document.body, '::after').right);
         const bottom = parseInt(window.getComputedStyle(document.body, '::after').bottom);
-        const width = window.innerWidth - right - left - border * 2 - marker;
-        const height = window.innerHeight - bottom - top - border * 2 - marker;
+        const width = window.innerWidth - right - left - 3 /* marker + border */;
+        const height = window.innerHeight - bottom - top - 3 /* marker + border */;
 
         document.body.classList.toggle('markers', true);
         const canvas = await snap();
@@ -36,7 +34,7 @@ window.addEventListener('load', async () => {
 
         const context = canvas.getContext('2d');
 
-        const region = scan(context, 5, width, height, marker, false);
+        const region = scan(context, width, height, false);
         const _canvas = region === undefined ? canvas : crop(canvas, region);
 
         if (region === undefined) {
