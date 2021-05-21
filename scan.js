@@ -16,8 +16,7 @@ const lime = {
 
 const tolerance = 2;
 
-// TODO: Fix `[1, 2]` to be `[2, 1]` once I get it to work in Chrome
-const scales = [, [1], [1, 2], [window.devicePixelRatio, 1]];
+const scales = window.devicePixelRatio === 1 ? [1] : [window.devicePixelRatio, 1];
 
 export default function scan(/** @type {CanvasRenderingContext2D} */ context, /** @type {number} */ width, /** @type {number} */ height, log = false) {
   // Pick red and lime adjusted to browser compression color artifacts
@@ -25,10 +24,10 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
   const [redR, redG, redB] = red[browser];
   const [limeR, limeG, limeB] = lime[browser];
 
-  // Do only normal scale if the screen is not scaled, or the HDPI scale first with normal scale fallback
-  for (const scale of scales[window.devicePixelRatio]) {
-    width *= scale;
-    height *= scale;
+  // Do only normal scale if the screen is not scaled, otherwise the scaled with fallback to unscaled
+  for (const scale of scales) {
+    const scaleWidth = width * scale;
+    const scaleHeight = height * scale;
 
     const imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
     const range = imageData.width * imageData.height * 4;
@@ -52,7 +51,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
         // Look at the expected pair pixel and its neighbors (fractional coords)
         for (let _y = -scale; _y <= scale; _y++) {
           for (let _x = -scale; _x <= scale; _x++) {
-            const index = (y + _y + ~~height) * imageData.width * 4 + (x + _x + ~~width) * 4;
+            const index = (y + _y + ~~scaleHeight) * imageData.width * 4 + (x + _x + ~~scaleWidth) * 4;
 
             // Ignore checking for the pair pixel if it falls outside of the bitmap
             if (index < 0 || index > range) {
@@ -62,7 +61,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
             const [r, g, b] = imageData.data.slice(index, index + 3);
 
             if (log) {
-              console.log(x + _x + ~~width, y + _y + ~~height, scale, r, g, b);
+              console.log(x + _x + ~~scaleWidth, y + _y + ~~scaleHeight, scale, r, g, b);
             }
 
             // Reject pixels which do not resembles the lime bottom-right marker pixel
@@ -77,7 +76,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
               console.groupEnd();
             }
 
-            return { x: x + scale, y: y + scale, width: width - scale, height: height - scale };
+            return { x: x + scale, y: y + scale, width: scaleWidth - scale, height: scaleHeight - scale };
           }
         }
 

@@ -165,12 +165,6 @@ This is intended to be used with things like CSS outline with relative units or
 box model shenanigans where the markers might be slightly offset. In this case
 the marked container's dimension could be passed it with some size tolerance.
 
-### Fix Chrome not scanning with scale array order `[2, 1]` instead of `[1, 2]`
-
-Chrome won't scan if the scale array is `[2, 1]` instead of `[1, 2]`, which
-would be the preferable way to configure it to ideally get the hit on the first
-scale loop iteration.
-
 ### Configure the media stream constraints better once they are well supported
 
 All of these are only in Opera right now!
