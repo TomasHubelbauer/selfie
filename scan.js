@@ -26,8 +26,12 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
 
   // Do only normal scale if the screen is not scaled, otherwise the scaled with fallback to unscaled
   for (const scale of scales) {
-    const scaleWidth = width * scale;
-    const scaleHeight = height * scale;
+    if (window.log) {
+      console.group(`@${scale}x`);
+    }
+
+    const scaleWidth = ~~width * scale;
+    const scaleHeight = ~~height * scale;
 
     const imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
     const range = imageData.width * imageData.height * 4;
@@ -45,13 +49,13 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
         }
 
         if (window.log) {
-          console.group(x, y, scale, r, g, b);
+          console.group('%c█', `color: rgb(${r},${g},${b});`, `${x}×${y}: rgb(${r},${g},${b})`);
         }
 
         // Look at the expected pair pixel and its neighbors (fractional coords)
         for (let _y = -scale; _y <= scale; _y++) {
           for (let _x = -scale; _x <= scale; _x++) {
-            const index = (y + _y + ~~scaleHeight) * imageData.width * 4 + (x + _x + ~~scaleWidth) * 4;
+            const index = (y + _y + scaleHeight) * imageData.width * 4 + (x + _x + scaleWidth) * 4;
 
             // Ignore checking for the pair pixel if it falls outside of the bitmap
             if (index < 0 || index > range) {
@@ -61,7 +65,7 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
             const [r, g, b] = imageData.data.slice(index, index + 3);
 
             if (window.log) {
-              console.log(x + _x + ~~scaleWidth, y + _y + ~~scaleHeight, scale, r, g, b);
+              console.log('%c█', `color: rgb(${r},${g},${b});`, `${x + _x + scaleWidth}×${y + _y + scaleHeight}: rgb(${r},${g},${b})`);
             }
 
             // Reject pixels which do not resembles the lime bottom-right marker pixel
@@ -84,6 +88,10 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
           console.groupEnd();
         }
       }
+    }
+
+    if (window.log) {
+      console.groupEnd();
     }
   }
 }

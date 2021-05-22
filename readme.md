@@ -138,16 +138,19 @@ supported.
 
 ## To-Do
 
-### Fix the `selfie.js` sample code not working on the page for some reason
+### Fix the `selfie.js` sample code not working in Chrome (at 1x)
 
 Run the project, access the page and run this in the DevTools Console:
 
 ```js
 const { default: selfie } = await import('./selfie.js');
+window.log = true;
 selfie('.snapButton');
 ```
 
-`region` is undefined even though both markers are shown.
+The markers are not found, which is probably due to at 1x the search area for
+the lime marker being too small and missing the marker. Tweak the positions of
+the markers and the passed width and height to make sure the markers are found.
 
 ### Improve the detection algorithm to be more flexible
 
