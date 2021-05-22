@@ -19,6 +19,9 @@ export default function (/** @type {string} */ selector) {
 
       // Note that ~~ is used to get rid of the fractional part of the numbers
       const bounds = element.getBoundingClientRect();
+      if (bounds.width === 0 || bounds.height === 0) {
+        throw new Error('The selected element is not visible (zero size)');
+      }
 
       const redMarker = document.createElement('div');
       redMarker.style = 'background: red; border: 1px solid white; height: 1px; position: absolute; width: 1px';
