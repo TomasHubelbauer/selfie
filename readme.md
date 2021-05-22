@@ -43,7 +43,7 @@ going to want to build the flow around this yourself, inspired by it.
 import snap from 'https://tomashubelbauer.github.io/selfie/snap.js';
 ```
 
-### ESM `await import`:
+### ESM `await import`
 
 ```js
 const { default: snap } = await import('https://tomashubelbauer.github.io/selfie/snap.js');
