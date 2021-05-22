@@ -135,22 +135,9 @@ supported.
 - [Display scaling](notes/display-scaling.md)
 - [Screen capture compression color artifacts](notes/screen-capture-compression-color-artifacts.md)
 - [Marker pair combinations algorithm](notes/marker-pair-combinations-algorithm.md)
+- [Size tolerance](notes/size-tolerance.md)
 
 ## To-Do
-
-### Improve the detection algorithm to be more flexible
-
-Change the size constraints to not be the exact sizes, but ranges, both optional
-and defaulting from zero to window size on the respective axis. This will allow
-providing a guesstimate instead of knowing the marker distances exactly. 
-
-This is intended to be used with things like CSS outline with relative units or
-box model shenanigans where the markers might be slightly offset. In this case
-the marked container's dimension could be passed it with some size tolerance.
-
-The performance of the algorithm is proportional to the breath of the search
-space though so it still makes a difference to calculate as good a guesstimate
-as possible.
 
 ### Configure the media stream constraints better once they are well supported
 

@@ -14,7 +14,8 @@ const lime = {
   other: [0, 255, 0],
 };
 
-const tolerance = 2;
+const colorTolerance = 2;
+const sizeTolerance = 0;
 
 const scales = window.devicePixelRatio === 1 ? [1] : [window.devicePixelRatio, 1];
 
@@ -41,9 +42,9 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
         const [r, g, b] = imageData.data.slice(index, index + 3);
 
         // Reject pixels which do not resembles the red top-left marker pixel
-        const rFail = Math.abs(redR - r) >= tolerance;
-        const gFail = Math.abs(redG - g) >= tolerance;
-        const bFail = Math.abs(redB - b) >= tolerance;
+        const rFail = Math.abs(redR - r) >= colorTolerance;
+        const gFail = Math.abs(redG - g) >= colorTolerance;
+        const bFail = Math.abs(redB - b) >= colorTolerance;
         if (rFail || gFail || bFail) {
           continue;
         }
@@ -53,8 +54,8 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
         }
 
         // Look at the expected pair pixel and its neighbors (fractional coords)
-        for (let _y = -scale; _y <= scale; _y++) {
-          for (let _x = -scale; _x <= scale; _x++) {
+        for (let _y = -scale + sizeTolerance; _y <= scale + sizeTolerance; _y++) {
+          for (let _x = -scale + sizeTolerance; _x <= scale + sizeTolerance; _x++) {
             const index = (y + _y + scaleHeight) * imageData.width * 4 + (x + _x + scaleWidth) * 4;
 
             // Ignore checking for the pair pixel if it falls outside of the bitmap
@@ -69,9 +70,9 @@ export default function scan(/** @type {CanvasRenderingContext2D} */ context, /*
             }
 
             // Reject pixels which do not resembles the lime bottom-right marker pixel
-            const rFail = Math.abs(limeR - r) >= tolerance;
-            const gFail = Math.abs(limeG - g) >= tolerance;
-            const bFail = Math.abs(limeB - b) >= tolerance;
+            const rFail = Math.abs(limeR - r) >= colorTolerance;
+            const gFail = Math.abs(limeG - g) >= colorTolerance;
+            const bFail = Math.abs(limeB - b) >= colorTolerance;
             if (rFail || gFail || bFail) {
               continue;
             }
