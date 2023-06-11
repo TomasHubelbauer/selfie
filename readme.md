@@ -139,11 +139,18 @@ supported.
 
 ## To-Do
 
+### Take a look at the `ImageCapture` API to use instead of `canvas`
+
+It is currently not supported in Firefox but once it gains support it will
+make for a much nicer API to use.
+
+https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture
+
 ### Configure the media stream constraints better once they are well supported
 
-All of these are only in Opera right now!
+Firefox lacks support for many of these as of now.
 
-https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/cursor
+https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSettings/cursor
 
 Disable cursor because we are not waiting for the user to point anywhere.
 
